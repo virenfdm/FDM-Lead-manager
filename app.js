@@ -95,6 +95,7 @@ const isAdmin = () => ME && ME.role === 'admin';
 const main = () => $('#main');
 
 // ---------- auth ----------
+let SUPPRESS_AUTH = false;
 function renderLogin(mode = 'in') {
   $('#app').innerHTML = `<div class="grid min-h-screen lg:grid-cols-2"><div class="login-art relative hidden flex-col justify-between overflow-hidden p-12 text-white lg:flex"><img src="logo-white.png" alt="FDM - The future begins here" class="relative z-10 h-16 w-auto self-start"><div class="relative z-10 max-w-md"><div class="mb-3 text-xs font-bold uppercase tracking-[.2em] text-red-300">MBA Admission Lead Manager</div><h2 class="text-4xl font-extrabold leading-tight">Turn every enquiry into a confirmed admission.</h2><p class="mt-4 text-white/70">Leads, counselling, follow-ups and offers, all in one beautiful workspace.</p><div class="mt-8 grid grid-cols-3 gap-3 text-center text-xs text-white/90"><div class="glass">Lead tracking</div><div class="glass">Smart follow-ups</div><div class="glass">Excel import</div></div></div><p class="relative z-10 text-xs text-white/50">© FDM · The future begins here</p></div>
     <div class="flex items-center justify-center p-6"><form id="lf" class="pop card w-full max-w-sm space-y-5 p-8"><img src="logo.png" alt="FDM" class="h-12 w-auto lg:hidden">
@@ -112,10 +113,23 @@ function renderLogin(mode = 'in') {
     let err = null, info = '';
     if (mode === 'in') { ({ error: err } = await sb.auth.signInWithPassword({ email: f.email.value, password: f.pw.value })); }
     else if (f.pw.value.length < 8) err = { message: 'Password must be at least 8 characters.' };
-    else { const r = await sb.auth.signUp({ email: f.email.value, password: f.pw.value, options: { data: { full_name: f.name.value } } }); err = r.error; if (!err && !r.data.session) info = 'Account created. Check your email to confirm, then sign in.'; }
+    else { SUPPRESS_AUTH = true; const r = await sb.auth.signUp({ email: f.email.value, password: f.pw.value, options: { data: { full_name: f.name.value } } }); err = r.error; if (!err && r.data.session) { await sb.auth.signOut(); SUPPRESS_AUTH = false; renderLogin('in'); toast('Account created successfully. Please sign in.'); return; } SUPPRESS_AUTH = false; if (!err) return showOtp(f.email.value); }
     if (err) msg.innerHTML = `<div class="rounded-lg bg-red-50 p-2 text-sm text-red-700">${esc(err.message)}</div>`;
     if (info) msg.innerHTML = `<div class="rounded-lg bg-emerald-50 p-2 text-sm text-emerald-700">${esc(info)}</div>`;
     b.disabled = false; b.textContent = mode === 'in' ? 'Sign in' : 'Create account';
+  };
+}
+function showOtp(email) {
+  $('#app').innerHTML = `<div class="flex min-h-screen items-center justify-center p-6"><form id="of" class="pop card w-full max-w-sm space-y-5 p-8 text-center"><img src="logo.png" alt="FDM" class="mx-auto h-12 w-auto"><div><h1 class="text-2xl font-extrabold text-navy-800">Verify your email</h1><p class="mt-1 text-sm text-slate-500">We sent a verification code to <b>${esc(email)}</b>. Enter it below.</p></div><input id="otp" class="input text-center text-2xl font-bold tracking-[.4em]" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="Enter code" required><div id="omsg"></div><button class="btn-primary w-full !py-2.5" id="obtn">Verify &amp; create account</button><div class="flex justify-between text-sm font-medium text-navy-600"><button type="button" id="ores" class="hover:underline">Resend code</button><button type="button" id="oback" class="hover:underline">Back</button></div></form></div>`;
+  const say = (t, ok) => { $('#omsg').innerHTML = `<div class="rounded-lg p-2 text-sm ${ok ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'}">${esc(t)}</div>`; };
+  $('#oback').onclick = () => renderLogin('up');
+  $('#ores').onclick = async () => { const { error } = await sb.auth.resend({ type: 'signup', email }); error ? say(error.message) : say('A new code has been sent.', true); };
+  $('#of').onsubmit = async (e) => {
+    e.preventDefault(); const b = $('#obtn'); b.disabled = true; b.textContent = 'Verifying…'; $('#omsg').innerHTML = '';
+    SUPPRESS_AUTH = true;
+    const { error } = await sb.auth.verifyOtp({ email, token: $('#otp').value.trim(), type: 'signup' });
+    if (!error) { await sb.auth.signOut(); SUPPRESS_AUTH = false; renderLogin('in'); toast('Account verified successfully. Please sign in.'); return; }
+    SUPPRESS_AUTH = false; say(error.message); b.disabled = false; b.textContent = 'Verify & create account';
   };
 }
 async function afterAuth(session) {
@@ -369,7 +383,7 @@ async function profilePage(id) {
   const card = (t, body) => `<div class="card p-4"><h2 class="mb-3 font-semibold text-navy-800">${t}</h2><div class="grid grid-cols-2 gap-3 md:grid-cols-3">${body}</div></div>`;
   main().innerHTML = `<div class="mx-auto max-w-5xl space-y-4">
     <div class="flex flex-wrap items-start justify-between gap-2"><div><h1 class="text-2xl font-extrabold text-navy-800">${esc(l.full_name)} <span class="text-base font-normal text-slate-400">${esc(l.lead_code)}</span></h1><div class="mt-1 flex gap-2">${badge(l.lead_status)}${badge(l.priority)}</div></div>
-      <div class="flex gap-2"><a class="btn-outline" href="tel:${esc(l.mobile)}">Call</a><a class="btn-outline" target="_blank" rel="noreferrer" href="https://wa.me/91${esc(l.mobile)}">WhatsApp</a><a class="btn-primary" href="#/leads/${l.id}/edit">Edit</a>${isAdmin() ? `<button class="btn-danger" onclick="askDelete('${l.id}',true)">Delete</button>` : ''}</div></div>
+      <div class="flex gap-2"><a class="btn-primary" href="tel:+91${esc(l.mobile)}" title="Call ${esc(l.full_name)}">📞 Call Now</a><a class="btn-outline" target="_blank" rel="noreferrer" href="https://wa.me/91${esc(l.mobile)}">WhatsApp</a><a class="btn-primary" href="#/leads/${l.id}/edit">Edit</a>${isAdmin() ? `<button class="btn-danger" onclick="askDelete('${l.id}',true)">Delete</button>` : ''}</div></div>
     ${card('Personal Details', kv('Mobile', l.mobile) + kv('Alternate Mobile', l.alt_mobile) + kv('Email', l.email) + kv('City', l.city) + kv('State', l.state) + kv('Lead Source', l.lead_source) + kv('Lead Date', fmtDate(l.lead_date)) + kv('Counsellor', l.assignee?.full_name))}
     ${card('Admission Preferences', kv('Program', l.program) + kv('Specialization', l.specialization) + kv('Locations', (l.locations || []).join(', ')) + kv('Total Budget', inr(l.total_budget)) + kv('Annual Fee Budget', inr(l.annual_fee_budget)) + kv('Preferred College', l.preferred_college) + kv('Hostel', l.hostel) + kv('Study Mode', l.study_mode) + kv('Study Abroad', l.study_abroad))}
     <div class="card p-4"><h2 class="mb-3 font-semibold text-navy-800">Entrance Exams</h2><div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr><th class="th">Exam</th><th class="th">Year</th><th class="th">Status</th><th class="th">Score</th><th class="th">Percentile</th><th class="th">Target</th></tr></thead><tbody>
@@ -407,7 +421,7 @@ function drawFollow() {
   main().innerHTML = `<div class="space-y-4"><h1 class="text-2xl font-extrabold text-navy-800">Follow-ups</h1>
     <div class="flex flex-wrap gap-2">${Object.keys(lists).map((x) => `<button onclick="FTAB='${x}';drawFollow()" class="rounded-full px-4 py-2 text-sm font-semibold transition ${FTAB === x ? 'bg-gradient-to-br from-navy-500 to-navy-700 text-white shadow-md shadow-red-500/25' : 'border border-slate-200 bg-white text-slate-600 hover:bg-navy-50'}">${x} (${lists[x].length})</button>`).join('')}</div>
     <div class="card overflow-x-auto"><table class="w-full"><thead class="border-b bg-slate-50"><tr><th class="th">When</th><th class="th">Student</th><th class="th">Mobile</th><th class="th">Status</th><th class="th">${FTAB === 'Completed' ? 'Outcome' : 'Remarks'}</th><th class="th"></th></tr></thead><tbody>
-    ${lists[FTAB].map((f) => `<tr class="border-b border-slate-100"><td class="td whitespace-nowrap ${FTAB === 'Overdue' ? 'text-red-600' : ''}">${fmtDT(FTAB === 'Completed' ? f.completed_at : f.due_at)}</td><td class="td"><a class="font-medium text-navy-700 hover:underline" href="#/leads/${f.leads?.id}">${esc(f.leads?.full_name)}</a> <span class="text-xs text-slate-400">${esc(f.leads?.lead_code)}</span></td><td class="td"><a class="text-navy-600" href="tel:${esc(f.leads?.mobile)}">${esc(f.leads?.mobile)}</a></td><td class="td">${badge(f.leads?.lead_status)}</td><td class="td text-slate-600">${esc(FTAB === 'Completed' ? [f.outcome, f.remarks].filter(Boolean).join(' — ') : f.remarks || '—')}</td><td class="td">${f.status === 'pending' ? `<button class="btn-primary !py-1" onclick="openFU('${f.id}')">Record outcome</button>` : ''}</td></tr>`).join('') || '<tr><td colspan="6" class="p-8 text-center text-slate-400">Nothing here.</td></tr>'}</tbody></table></div></div>`;
+    ${lists[FTAB].map((f) => `<tr class="border-b border-slate-100"><td class="td whitespace-nowrap ${FTAB === 'Overdue' ? 'text-red-600' : ''}">${fmtDT(FTAB === 'Completed' ? f.completed_at : f.due_at)}</td><td class="td"><a class="font-medium text-navy-700 hover:underline" href="#/leads/${f.leads?.id}">${esc(f.leads?.full_name)}</a> <span class="text-xs text-slate-400">${esc(f.leads?.lead_code)}</span></td><td class="td"><a class="text-navy-600" href="tel:+91${esc(f.leads?.mobile)}">${esc(f.leads?.mobile)}</a></td><td class="td">${badge(f.leads?.lead_status)}</td><td class="td text-slate-600">${esc(FTAB === 'Completed' ? [f.outcome, f.remarks].filter(Boolean).join(' — ') : f.remarks || '—')}</td><td class="td">${f.status === 'pending' ? `<button class="btn-primary !py-1" onclick="openFU('${f.id}')">Record outcome</button>` : ''}</td></tr>`).join('') || '<tr><td colspan="6" class="p-8 text-center text-slate-400">Nothing here.</td></tr>'}</tbody></table></div></div>`;
 }
 function openFU(fid) {
   const f = FROWS.find((x) => x.id === fid);
@@ -542,6 +556,12 @@ async function updUser(id, patch) {
     return;
   }
   $('#app').innerHTML = spin();
-  const { data } = await sb.auth.getSession(); await afterAuth(data.session);
-  sb.auth.onAuthStateChange((ev, s) => { if (ev === 'SIGNED_IN' || ev === 'SIGNED_OUT') setTimeout(() => afterAuth(s), 0); });
+  const hs = location.hash, fromMail = /[#&]type=(signup|invite|email_change)/.test(hs), mailErr = /[#&]error(_description)?=/.test(hs);
+  if (fromMail || mailErr) {
+    if (fromMail) { await sb.auth.getSession(); await sb.auth.signOut(); }
+    history.replaceState(null, '', location.pathname + location.search);
+    renderLogin('in');
+    if (fromMail) toast('Email confirmed successfully. Please sign in.'); else toast('This confirmation link is invalid or has expired. Please sign in or create the account again.', true);
+  } else { const { data } = await sb.auth.getSession(); await afterAuth(data.session); }
+  sb.auth.onAuthStateChange((ev, s) => { if (!SUPPRESS_AUTH && (ev === 'SIGNED_IN' || ev === 'SIGNED_OUT')) setTimeout(() => afterAuth(s), 0); });
 })();
