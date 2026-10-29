@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MBA Admission Lead Manager · FDM</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'] }, colors: { navy: { 50: '#fff3f1', 100: '#ffe1dd', 200: '#ffc3bb', 500: '#e5463c', 600: '#d93a30', 700: '#c92f26', 800: '#171923', 900: '#0d0e14' } } } } };
+  </script>
+  <style type="text/tailwindcss">
+    @layer components {
+      .btn { @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[.98]; }
+      .btn-primary { @apply btn bg-gradient-to-br from-navy-500 to-navy-700 text-white shadow-md shadow-red-500/25 hover:shadow-lg hover:shadow-red-500/30 hover:-translate-y-px; }
+      .btn-outline { @apply btn border border-slate-200 bg-white text-slate-700 shadow-sm hover:border-navy-200 hover:bg-navy-50 hover:text-navy-700; }
+      .btn-danger { @apply btn bg-gradient-to-br from-rose-500 to-red-700 text-white shadow-md shadow-red-500/25 hover:-translate-y-px; }
+      .input { @apply w-full rounded-xl border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm transition placeholder:text-slate-400 hover:border-slate-300 focus:border-navy-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-navy-100; }
+      .label { @apply mb-1 block text-[11px] font-bold uppercase tracking-wider text-slate-500; }
+      .card { @apply rounded-2xl border border-slate-200/70 bg-white shadow-[0_1px_2px_rgba(16,24,40,.04),0_8px_24px_-12px_rgba(16,24,40,.10)]; }
+      .th { @apply whitespace-nowrap px-3 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500; }
+      .td { @apply px-3 py-3 text-sm; }
+    }
+  </style>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; background: #f5f6fa; background-image: radial-gradient(900px 400px at 100% -10%, rgba(229,70,60,.07), transparent), radial-gradient(700px 400px at -10% 110%, rgba(23,25,35,.05), transparent); background-attachment: fixed; -webkit-font-smoothing: antialiased; }
+    h1 { letter-spacing: -.02em; }
+    a { transition: color .15s; }
+    ::-webkit-scrollbar { width: 10px; height: 10px; } ::-webkit-scrollbar-thumb { background: #d5d8e2; border-radius: 99px; border: 2px solid transparent; background-clip: padding-box; } ::-webkit-scrollbar-thumb:hover { background: #b8bccb; background-clip: padding-box; border: 2px solid transparent; }
+    #side { background: linear-gradient(180deg, #1b1d29 0%, #12131b 100%); }
+    .nav-link { display: flex; align-items: center; gap: .75rem; padding: .65rem .85rem; border-radius: .8rem; color: #b9bdcc; font-size: .875rem; font-weight: 600; transition: all .15s; }
+    .nav-link:hover { background: rgba(255,255,255,.07); color: #fff; }
+    .nav-active, .nav-active:hover { background: linear-gradient(135deg, #e5463c, #c92f26); color: #fff; box-shadow: 0 8px 20px -8px rgba(229,70,60,.7); }
+    .login-art { background: radial-gradient(600px 400px at 85% 0%, rgba(229,70,60,.55), transparent), radial-gradient(500px 500px at 0% 100%, rgba(229,70,60,.25), transparent), linear-gradient(160deg, #1b1d29, #0d0e14); }
+    .login-art::after { content: ''; position: absolute; width: 520px; height: 520px; right: -180px; bottom: -200px; border: 60px solid rgba(255,255,255,.04); border-radius: 50%; }
+    .glass { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); border-radius: 14px; padding: .8rem .5rem; backdrop-filter: blur(6px); font-weight: 600; }
+    details > summary { list-style: none; display: flex; align-items: center; justify-content: space-between; } details > summary::-webkit-details-marker { display: none; }
+    details > summary::after { content: ''; width: 8px; height: 8px; border-right: 2px solid #94a3b8; border-bottom: 2px solid #94a3b8; transform: rotate(45deg); transition: transform .2s; margin-right: 4px; } details[open] > summary::after { transform: rotate(-135deg); }
+    details[open] > summary { border-bottom: 1px solid #f1f5f9; }
+    tbody tr { transition: background .15s; } tbody tr:hover { background: #fff7f6; }
+    .stat { transition: transform .2s, box-shadow .2s; } .stat:hover { transform: translateY(-3px); box-shadow: 0 16px 30px -14px rgba(16,24,40,.25); }
+    .pop { animation: pop .18s ease-out; } @keyframes pop { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
+    .toast-in { animation: tin .25s ease-out; } @keyframes tin { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+    #main > * { animation: pop .25s ease-out; }
+    input[type=checkbox]:not(.hidden) { accent-color: #d93a30; width: 1rem; height: 1rem; }
+    .border-red-500 { border-color: #ef4444 !important; background: #fef2f2 !important; }
+  </style>
+</head>
+<body class="text-slate-800">
+  <div id="app"></div>
+  <div id="toasts" class="fixed right-4 top-4 z-[100] space-y-2"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
