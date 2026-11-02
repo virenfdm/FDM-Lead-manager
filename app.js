@@ -31,10 +31,10 @@ const AC = {
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const spin = (t = 'Loading…') => `<div class="flex items-center justify-center gap-3 p-10 text-slate-500"><div class="h-5 w-5 animate-spin rounded-full border-2 border-navy-200 border-t-navy-600"></div>${t}</div>`;
+const spin = (t = 'Loading…') => `<div class="flex items-center justify-center gap-3 p-10 text-slate-500"><div class="h-5 w-5 animate-spin rounded-full border-2 border-navy-100 border-t-brand-600"></div>${t}</div>`;
 const toast = (msg, err) => {
   const d = document.createElement('div');
-  d.className = `toast-in max-w-sm rounded-xl px-4 py-3 text-sm font-medium text-white shadow-xl ${err ? 'bg-gradient-to-br from-rose-500 to-red-700' : 'bg-gradient-to-br from-emerald-500 to-emerald-700'}`; d.textContent = msg;
+  d.className = `max-w-sm rounded-xl px-4 py-3 text-sm font-medium text-white shadow-xl ${err ? 'bg-[#8f1d1a]' : 'bg-navy-800'}`; d.textContent = msg;
   $('#toasts').appendChild(d); setTimeout(() => d.remove(), 4500);
 };
 const normMobile = (m) => String(m || '').replace(/\D/g, '').slice(-10);
@@ -70,16 +70,16 @@ const opts = (list, sel) => list.map((o) => `<option ${o === sel ? 'selected' : 
 const fld = (label, inner, req, id = '') => `<label class="block" ${id ? `id="${id}"` : ''}><span class="label">${label}${req ? '<span class="text-red-600"> *</span>' : ''}</span>${inner}</label>`;
 const inp = (n, label, v = '', a = '', req = false) => fld(label, `<input class="input" name="${n}" value="${esc(v)}" ${a}>`, req);
 const sel = (n, label, list, v = '', req = false, a = '') => fld(label, `<select class="input" name="${n}" ${a}><option value="">Select…</option>${opts(list, v)}</select>`, req);
-const sec = (title, body, open) => `<details class="card overflow-hidden" ${open ? 'open' : ''}><summary class="cursor-pointer select-none bg-slate-50/70 px-5 py-3.5 font-bold text-navy-800">${title}</summary><div class="p-5">${body}</div></details>`;
+const sec = (title, body, open) => `<details class="card overflow-hidden" ${open ? 'open' : ''}><summary class="cursor-pointer select-none px-5 py-4 font-display text-base font-semibold text-navy-800">${title}</summary><div class="p-5">${body}</div></details>`;
 const GRID = 'grid gap-3 sm:grid-cols-2 lg:grid-cols-3';
 const COLORS = { New: 'bg-blue-100 text-blue-800', 'Not Contacted': 'bg-slate-100 text-slate-700', Contacted: 'bg-sky-100 text-sky-800', Interested: 'bg-emerald-100 text-emerald-800', 'Follow-up Required': 'bg-amber-100 text-amber-800', 'Not Interested': 'bg-red-100 text-red-700', 'Application Started': 'bg-indigo-100 text-indigo-800', 'Application Submitted': 'bg-indigo-100 text-indigo-800', Shortlisted: 'bg-violet-100 text-violet-800', 'GD/PI Scheduled': 'bg-violet-100 text-violet-800', 'Offer Received': 'bg-teal-100 text-teal-800', 'Admission Confirmed': 'bg-green-200 text-green-900', Lost: 'bg-gray-200 text-gray-600', Hot: 'bg-red-100 text-red-700', Warm: 'bg-orange-100 text-orange-700', Cold: 'bg-sky-100 text-sky-700' };
-const badge = (t) => (t ? `<span class="inline-block whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ring-black/5 ${COLORS[t] || 'bg-slate-100 text-slate-700'}">${esc(t)}</span>` : '—');
+const badge = (t) => (t ? `<span class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold ${COLORS[t] || 'bg-slate-100 text-slate-700'}"><i class="h-1.5 w-1.5 rounded-full bg-current opacity-70"></i>${esc(t)}</span>` : '—');
 
 function modal(title, body, wide) {
   closeModal();
   const d = document.createElement('div'); d.id = 'modal';
-  d.className = 'fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm';
-  d.innerHTML = `<div class="pop max-h-[90vh] w-full overflow-auto rounded-2xl bg-white p-6 shadow-2xl ${wide ? 'max-w-2xl' : 'max-w-md'}"><div class="mb-4 flex items-center justify-between"><h3 class="text-lg font-semibold text-navy-800">${esc(title)}</h3><button onclick="closeModal()" class="rounded-lg px-2 text-2xl leading-none text-slate-400 hover:bg-slate-100 hover:text-slate-700">×</button></div>${body}</div>`;
+  d.className = 'fixed inset-0 z-50 flex items-center justify-center bg-navy-900/50 p-4 backdrop-blur-sm';
+  d.innerHTML = `<div class="max-h-[90vh] w-full overflow-auto rounded-3xl bg-white p-6 shadow-2xl ${wide ? 'max-w-2xl' : 'max-w-md'}"><div class="mb-4 flex items-center justify-between"><h3 class="text-lg font-semibold text-navy-800">${esc(title)}</h3><button onclick="closeModal()" class="text-2xl leading-none text-slate-400">×</button></div>${body}</div>`;
   d.addEventListener('click', (e) => { if (e.target === d) closeModal(); });
   document.body.appendChild(d);
 }
@@ -95,17 +95,23 @@ const isAdmin = () => ME && ME.role === 'admin';
 const main = () => $('#main');
 
 // ---------- auth ----------
-let SUPPRESS_AUTH = false;
 function renderLogin(mode = 'in') {
-  $('#app').innerHTML = `<div class="grid min-h-screen lg:grid-cols-2"><div class="login-art relative hidden flex-col justify-between overflow-hidden p-12 text-white lg:flex"><img src="logo-white.png" alt="FDM - The future begins here" class="relative z-10 h-16 w-auto self-start"><div class="relative z-10 max-w-md"><div class="mb-3 text-xs font-bold uppercase tracking-[.2em] text-red-300">MBA Admission Lead Manager</div><h2 class="text-4xl font-extrabold leading-tight">Turn every enquiry into a confirmed admission.</h2><p class="mt-4 text-white/70">Leads, counselling, follow-ups and offers, all in one beautiful workspace.</p><div class="mt-8 grid grid-cols-3 gap-3 text-center text-xs text-white/90"><div class="glass">Lead tracking</div><div class="glass">Smart follow-ups</div><div class="glass">Excel import</div></div></div><p class="relative z-10 text-xs text-white/50">© FDM · The future begins here</p></div>
-    <div class="flex items-center justify-center p-6"><form id="lf" class="pop card w-full max-w-sm space-y-5 p-8"><img src="logo.png" alt="FDM" class="h-12 w-auto lg:hidden">
-    <div><h1 class="text-2xl font-extrabold text-navy-800">${mode === 'in' ? 'Welcome back' : 'Create your account'}</h1><p class="mt-1 text-sm text-slate-500">${mode === 'in' ? 'Sign in to continue' : 'Create an account (the first account becomes Admin)'}</p></div>
-    ${mode === 'up' ? '<div><label class="label">Full name</label><input class="input" name="name" required></div>' : ''}
-    <div><label class="label">Email</label><input type="email" class="input" name="email" required></div>
-    <div><label class="label">Password</label><input type="password" class="input" name="pw" required></div>
-    <div id="lmsg"></div>
-    <button class="btn-primary w-full !py-2.5" id="lbtn">${mode === 'in' ? 'Sign in' : 'Create account'}</button>
-    <button type="button" class="w-full text-center text-sm font-medium text-navy-600 hover:underline" id="lsw">${mode === 'in' ? 'First time? Create an account' : 'Already have an account? Sign in'}</button></form></div></div>`;
+  $('#app').innerHTML = `<div class="grid min-h-screen lg:grid-cols-[1.05fr_1fr]">
+    <section class="relative hidden flex-col justify-between overflow-hidden bg-brand-600 p-12 text-white lg:flex">
+      <div class="self-start rounded-2xl bg-white p-4 shadow-xl"><img src="FDM.JPG" alt="FDM - The future begins here" class="h-16 w-auto"></div>
+      <div class="relative z-10 max-w-md"><h2 class="text-5xl font-semibold leading-[1.05]">Every seat starts with a conversation.</h2><p class="mt-5 text-lg text-white/90">Track every MBA and PGDM lead from the first call to a confirmed admission.</p>
+        <div class="mt-8 flex flex-wrap gap-2 text-sm font-medium">${['New', 'Contacted', 'Interested', 'Applied', 'Offer', 'Confirmed'].map((x) => `<span class="rounded-full bg-white/15 px-3 py-1">${x}</span>`).join('')}</div></div>
+      <div class="pointer-events-none absolute -bottom-32 -right-32 h-[26rem] w-[26rem] rounded-full border-[56px] border-white/10"></div>
+    </section>
+    <section class="flex items-center justify-center bg-white p-6 sm:p-12"><form id="lf" class="w-full max-w-sm space-y-5">
+      <img src="FDM.JPG" alt="FDM - The future begins here" class="h-14 w-auto lg:hidden">
+      <div><h1 class="text-3xl font-bold text-navy-800">${mode === 'in' ? 'Welcome back' : 'Create your account'}</h1><p class="mt-1.5 text-sm text-slate-500">${mode === 'in' ? 'Sign in to MBA Admission Lead Manager' : 'The first account becomes Admin'}</p></div>
+      ${mode === 'up' ? '<div><label class="label">Full name</label><input class="input" name="name" required></div>' : ''}
+      <div><label class="label">Email</label><input type="email" class="input" name="email" required></div>
+      <div><label class="label">Password</label><input type="password" class="input" name="pw" required></div>
+      <div id="lmsg"></div>
+      <button class="btn-primary w-full !py-3" id="lbtn">${mode === 'in' ? 'Sign in' : 'Create account'}</button>
+      <button type="button" class="w-full text-center text-sm font-medium text-navy-600 hover:underline" id="lsw">${mode === 'in' ? 'First time? Create an account' : 'Already have an account? Sign in'}</button></form></section></div>`;
   $('#lsw').onclick = () => renderLogin(mode === 'in' ? 'up' : 'in');
   $('#lf').onsubmit = async (e) => {
     e.preventDefault(); const f = e.target; const msg = $('#lmsg'); msg.innerHTML = '';
@@ -113,23 +119,10 @@ function renderLogin(mode = 'in') {
     let err = null, info = '';
     if (mode === 'in') { ({ error: err } = await sb.auth.signInWithPassword({ email: f.email.value, password: f.pw.value })); }
     else if (f.pw.value.length < 8) err = { message: 'Password must be at least 8 characters.' };
-    else { SUPPRESS_AUTH = true; const r = await sb.auth.signUp({ email: f.email.value, password: f.pw.value, options: { data: { full_name: f.name.value } } }); err = r.error; if (!err && r.data.session) { await sb.auth.signOut(); SUPPRESS_AUTH = false; renderLogin('in'); toast('Account created successfully. Please sign in.'); return; } SUPPRESS_AUTH = false; if (!err) return showOtp(f.email.value); }
+    else { const r = await sb.auth.signUp({ email: f.email.value, password: f.pw.value, options: { data: { full_name: f.name.value } } }); err = r.error; if (!err && !r.data.session) info = 'Account created. Check your email to confirm, then sign in.'; }
     if (err) msg.innerHTML = `<div class="rounded-lg bg-red-50 p-2 text-sm text-red-700">${esc(err.message)}</div>`;
     if (info) msg.innerHTML = `<div class="rounded-lg bg-emerald-50 p-2 text-sm text-emerald-700">${esc(info)}</div>`;
     b.disabled = false; b.textContent = mode === 'in' ? 'Sign in' : 'Create account';
-  };
-}
-function showOtp(email) {
-  $('#app').innerHTML = `<div class="flex min-h-screen items-center justify-center p-6"><form id="of" class="pop card w-full max-w-sm space-y-5 p-8 text-center"><img src="logo.png" alt="FDM" class="mx-auto h-12 w-auto"><div><h1 class="text-2xl font-extrabold text-navy-800">Verify your email</h1><p class="mt-1 text-sm text-slate-500">We sent a verification code to <b>${esc(email)}</b>. Enter it below.</p></div><input id="otp" class="input text-center text-2xl font-bold tracking-[.4em]" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="Enter code" required><div id="omsg"></div><button class="btn-primary w-full !py-2.5" id="obtn">Verify &amp; create account</button><div class="flex justify-between text-sm font-medium text-navy-600"><button type="button" id="ores" class="hover:underline">Resend code</button><button type="button" id="oback" class="hover:underline">Back</button></div></form></div>`;
-  const say = (t, ok) => { $('#omsg').innerHTML = `<div class="rounded-lg p-2 text-sm ${ok ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'}">${esc(t)}</div>`; };
-  $('#oback').onclick = () => renderLogin('up');
-  $('#ores').onclick = async () => { const { error } = await sb.auth.resend({ type: 'signup', email }); error ? say(error.message) : say('A new code has been sent.', true); };
-  $('#of').onsubmit = async (e) => {
-    e.preventDefault(); const b = $('#obtn'); b.disabled = true; b.textContent = 'Verifying…'; $('#omsg').innerHTML = '';
-    SUPPRESS_AUTH = true;
-    const { error } = await sb.auth.verifyOtp({ email, token: $('#otp').value.trim(), type: 'signup' });
-    if (!error) { await sb.auth.signOut(); SUPPRESS_AUTH = false; renderLogin('in'); toast('Account verified successfully. Please sign in.'); return; }
-    SUPPRESS_AUTH = false; say(error.message); b.disabled = false; b.textContent = 'Verify & create account';
   };
 }
 async function afterAuth(session) {
@@ -145,15 +138,16 @@ async function afterAuth(session) {
 function renderShell() {
   const items = [['dashboard', 'Dashboard', '#/'], ['leads', 'Leads', '#/leads'], ['followups', 'Follow-ups', '#/followups'], ['import', 'Import / Export', '#/import']];
   if (isAdmin()) items.push(['users', 'Users', '#/users']);
-  const IC = { dashboard: '<path d="M3 13h8V3H3zM13 21h8V11h-8zM13 3v6h8V3zM3 21h8v-6H3z"/>', leads: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/>', followups: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', import: '<path d="M12 3v12M7 10l5 5 5-5M4 21h16"/>', users: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>' };
-  const ico = (k) => `<svg class="h-[18px] w-[18px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${IC[k]}</svg>`;
+  const IC = { dashboard: '<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>', leads: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 4.6a3.5 3.5 0 010 6.8M18 14.7c2 .6 3.2 2.3 3.5 5.3"/>', followups: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', import: '<path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v3h16v-3"/>', users: '<circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 4-6 8-6s7.2 2 8 6"/>' };
   $('#app').innerHTML = `<div class="min-h-screen md:flex">
-    <header class="flex items-center justify-between bg-navy-800 px-4 py-3 text-white md:hidden"><img src="logo-white.png" alt="FDM" class="h-9 w-auto"><button class="text-2xl" onclick="$('#side').classList.toggle('hidden')">☰</button></header>
-    <aside id="side" class="relative hidden w-full shrink-0 text-white md:sticky md:top-0 md:block md:h-screen md:w-64">
-      <div class="hidden px-6 pb-4 pt-7 md:block"><img src="logo-white.png" alt="FDM - The future begins here" class="h-14 w-auto"><div class="mt-4 text-[11px] font-bold uppercase tracking-[.18em] text-white/40">Admission Lead Manager</div></div>
-      <nav class="space-y-1 px-4 pb-3 md:mt-2">${items.map(([k, l, h]) => `<a data-nav="${k}" href="${h}" onclick="if(innerWidth<768)$('#side').classList.add('hidden')" class="nav-link">${ico(k)}${l}</a>`).join('')}
-      <a href="#/leads/new" class="mt-4 flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-2.5 text-sm font-semibold hover:bg-white/10">+ Add Lead</a></nav>
-      <div class="flex items-center gap-3 border-t border-white/10 px-5 py-4 text-xs md:absolute md:bottom-0 md:w-64"><div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-navy-500 to-navy-700 text-sm font-bold">${esc((ME.full_name || '?').trim().charAt(0).toUpperCase())}</div><div class="min-w-0 flex-1"><div class="truncate text-sm font-semibold text-white">${esc(ME.full_name)}</div><div class="capitalize text-white/50">${ME.role}</div></div><button class="rounded-lg px-2 py-1 text-white/60 hover:bg-white/10 hover:text-white" onclick="signOut()">Sign out</button></div>
+    <header class="flex items-center justify-between border-b border-navy-100 bg-white px-4 py-3 md:hidden"><img src="FDM.JPG" alt="FDM" class="h-9 w-auto"><button class="grid h-10 w-10 place-items-center rounded-xl border border-navy-100 text-xl text-navy-800" aria-label="Menu" onclick="$('#side').classList.toggle('hidden')">☰</button></header>
+    <aside id="side" class="hidden w-full shrink-0 flex-col border-r border-navy-100 bg-white md:sticky md:top-0 md:flex md:h-screen md:w-64">
+      <div class="hidden px-6 pb-1 pt-7 md:block"><img src="FDM.JPG" alt="FDM - The future begins here" class="w-40"></div>
+      <div class="px-6 pb-4 pt-3 font-display text-sm font-semibold text-slate-500">MBA Admission Lead Manager</div>
+      <nav class="flex-1 space-y-1 px-3">${items.map(([k, l, h]) => `<a data-nav="${k}" href="${h}" onclick="if(innerWidth<768)$('#side').classList.add('hidden')" class="navlink"><svg viewBox="0 0 24 24">${IC[k]}</svg>${l}</a>`).join('')}
+      <a href="#/leads/new" onclick="if(innerWidth<768)$('#side').classList.add('hidden')" class="btn-primary mt-4 w-full">+ Add Lead</a>
+      <button class="btn-outline mt-2 w-full" onclick="if(innerWidth<768)$('#side').classList.add('hidden');quickAdd()">Quick Add (name, mobile, source)</button></nav>
+      <div class="m-3 flex items-center gap-3 rounded-2xl bg-navy-50 p-3"><div class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-navy-800 font-display font-bold text-white">${esc((ME.full_name || '?').trim().charAt(0).toUpperCase())}</div><div class="min-w-0 flex-1 text-xs"><div class="truncate text-sm font-semibold text-navy-800">${esc(ME.full_name)}</div><div class="capitalize text-slate-500">${ME.role}</div></div><button class="text-xs font-semibold text-brand-700 hover:underline" onclick="signOut()">Sign out</button></div>
     </aside><main id="main" class="min-w-0 flex-1 p-4 md:p-8"></main></div>`;
 }
 async function signOut() { await sb.auth.signOut(); ME = null; renderLogin(); }
@@ -163,7 +157,7 @@ function route() {
   if (!ME || !$('#main')) return;
   const h = location.hash.replace(/^#\/?/, ''); const p = h.split('/');
   const key = p[0] || 'dashboard';
-  $$('[data-nav]').forEach((a) => { const on = a.dataset.nav === key; a.classList.toggle('nav-active', on); });
+  $$('[data-nav]').forEach((a) => { const on = a.dataset.nav === key; a.classList.toggle('nav-on', on); });
   main().innerHTML = spin();
   const run = async () => {
     if (!h) return dashboardPage();
@@ -192,9 +186,14 @@ async function dashboardPage() {
     ['Admissions Confirmed', leads.filter((l) => l.lead_status === 'Admission Confirmed' || l.admission_status === 'Confirmed').length, 'bg-green-700']];
   const by = K.STATUS.map((x) => [x, cnt(x)]); const max = Math.max(1, ...by.map((x) => x[1]));
   const upList = [...over.slice(0, 3), ...today, ...up].slice(0, 8);
-  main().innerHTML = `<div class="space-y-6"><div class="flex items-center justify-between"><div><h1 class="text-3xl font-extrabold text-navy-800">Dashboard</h1><p class="mt-1 text-sm text-slate-500">Welcome back, ${esc(ME.full_name)} · ${new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}</p></div><a href="#/leads/new" class="btn-primary">+ Add Lead</a></div>
-    <div class="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-5">${stats.map(([l, n, c]) => `<div class="card stat overflow-hidden"><div class="h-1.5 ${c}"></div><div class="p-4"><div class="text-3xl font-extrabold text-navy-800">${n}</div><div class="text-xs font-medium text-slate-500">${l}</div></div></div>`).join('')}</div>
-    <div class="grid gap-6 lg:grid-cols-2"><div class="card p-4"><h2 class="mb-3 font-semibold text-navy-800">Leads by Status</h2><div class="space-y-2">${by.map(([x, n]) => `<div class="flex items-center gap-2 text-xs"><div class="w-36 shrink-0 text-slate-600">${x}</div><div class="h-3 flex-1 overflow-hidden rounded-full bg-slate-100"><div class="h-3 rounded-full bg-gradient-to-r from-navy-500 to-navy-700" style="width:${(n / max) * 100}%"></div></div><div class="w-8 text-right font-medium">${n}</div></div>`).join('')}</div></div>
+  const hr = new Date().getHours(), hi = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
+  main().innerHTML = `<div class="space-y-6"><section class="relative overflow-hidden rounded-3xl bg-navy-800 p-6 text-white md:p-8"><div class="pointer-events-none absolute -right-16 -top-20 h-72 w-72 rounded-full border-[40px] border-brand-500/25"></div>
+    <div class="relative flex flex-wrap items-end justify-between gap-6"><div><p class="text-sm text-navy-200">${fmtDate(new Date())}</p><h1 class="mt-1 text-3xl font-bold md:text-4xl">${hi}, ${esc((ME.full_name || '').split(' ')[0])}</h1>
+      <p class="mt-2 max-w-md text-navy-100">${today.length ? `${today.length} follow-up${today.length === 1 ? ' is' : 's are'} due today.` : 'No follow-ups are due today.'}${over.length ? ` ${over.length} overdue need${over.length === 1 ? 's' : ''} a call.` : ''}</p></div>
+      <div class="flex items-center gap-6"><div><div class="font-display text-5xl font-bold">${today.length}</div><div class="text-sm text-navy-200">due today</div></div><div class="h-12 w-px bg-white/20"></div><div><div class="font-display text-5xl font-bold ${over.length ? 'text-brand-100' : ''}">${over.length}</div><div class="text-sm text-navy-200">overdue</div></div></div></div>
+    <div class="relative mt-6 flex flex-wrap gap-2"><a href="#/leads/new" class="btn-primary">+ Add Lead</a><button class="btn bg-white/10 text-white hover:bg-white/20" onclick="quickAdd()">Quick Add</button><a href="#/followups" class="btn bg-white/10 text-white hover:bg-white/20">Open follow-ups</a></div></section>
+    <div class="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-5">${stats.map(([l, n, c]) => `<div class="card p-4"><div class="flex items-center gap-2 text-xs font-medium text-slate-500"><span class="h-2 w-2 rounded-full ${c}"></span>${l}</div><div class="mt-2 font-display text-3xl font-bold text-navy-800">${n}</div></div>`).join('')}</div>
+    <div class="grid gap-6 lg:grid-cols-2"><div class="card p-4"><h2 class="mb-3 font-semibold text-navy-800">Leads by Status</h2><div class="space-y-2">${by.map(([x, n]) => `<div class="flex items-center gap-2 text-xs"><div class="w-36 shrink-0 text-slate-600">${x}</div><div class="h-3 flex-1 rounded-full bg-navy-50"><div class="h-3 rounded-full bg-brand-500" style="width:${(n / max) * 100}%"></div></div><div class="w-8 text-right font-medium">${n}</div></div>`).join('')}</div></div>
     <div class="card p-4"><div class="mb-3 flex justify-between"><h2 class="font-semibold text-navy-800">Upcoming Follow-ups</h2><a href="#/followups" class="text-sm text-navy-600 underline">View all</a></div>
       ${upList.map((f) => `<a href="#/leads/${f.leads?.id}" class="flex justify-between border-b border-slate-100 py-2 text-sm hover:bg-navy-50"><span>${esc(f.leads?.full_name)} <span class="text-xs text-slate-400">${esc(f.leads?.lead_code)}</span></span><span class="${t(f) < s ? 'text-red-600' : 'text-slate-600'}">${fmtDT(f.due_at)}</span></a>`).join('') || '<p class="text-sm text-slate-400">No pending follow-ups.</p>'}</div></div>
     <div class="card p-4"><h2 class="mb-3 font-semibold text-navy-800">Recent Leads</h2><div class="overflow-x-auto"><table class="w-full"><tbody>
@@ -215,7 +214,7 @@ async function leadsPage() {
 function drawLeadsShell() {
   const fsel = (k, label, list) => `<select class="input" onchange="setF('${k}',this.value)"><option value="">${label}: All</option>${opts(list, F[k])}</select>`;
   const fnum = (k, ph) => `<input class="input" type="number" placeholder="${ph}" value="${esc(F[k])}" oninput="setF('${k}',this.value)">`;
-  main().innerHTML = `<div class="space-y-4"><div class="flex flex-wrap items-center justify-between gap-2"><h1 class="text-2xl font-extrabold text-navy-800">Leads <span id="lcount" class="text-base font-normal text-slate-400"></span></h1><a href="#/leads/new" class="btn-primary">+ Add New Lead</a></div>
+  main().innerHTML = `<div class="space-y-4"><div class="flex flex-wrap items-center justify-between gap-2"><h1 class="text-2xl font-bold text-navy-800">Leads <span id="lcount" class="text-base font-normal text-slate-400"></span></h1><div class="flex gap-2"><button class="btn-outline" onclick="quickAdd()">Quick Add</button><a href="#/leads/new" class="btn-primary">+ Add New Lead</a></div></div>
     <div class="card space-y-3 p-3"><div class="flex gap-2"><input class="input" placeholder="Search name, mobile, email or Lead ID…" value="${esc(F.q)}" oninput="setF('q',this.value)"><button class="btn-outline whitespace-nowrap" onclick="SHOWF=!SHOWF;drawLeadsShell()">${SHOWF ? 'Hide' : 'Filters'}</button><button class="btn-outline" onclick="F={...EMPTY_F};PG=0;drawLeadsShell()">Reset</button></div>
     ${SHOWF ? `<div class="grid grid-cols-2 gap-2 md:grid-cols-4">${fnum('bmin', 'Min budget ₹')}${fnum('bmax', 'Max budget ₹')}${fsel('program', 'Program', K.PROGRAMS)}${fsel('spec', 'Specialization', K.SPECS)}${fsel('loc', 'Location', K.LOCS)}${fsel('exam', 'Exam', K.EXAMS)}${fnum('pmin', 'Min percentile')}${fnum('gmin', 'Min graduation %')}${fsel('status', 'Status', K.STATUS)}${fsel('priority', 'Priority', K.PRIORITY)}</div>` : ''}</div>
     <div class="card overflow-x-auto" id="tbl"></div><div class="flex items-center justify-between text-sm" id="pg"></div></div>`;
@@ -246,7 +245,7 @@ function drawLeads() {
   const view = rows.slice(PG * PAGE_SIZE, PG * PAGE_SIZE + PAGE_SIZE);
   const th = (k, l) => `<th class="th cursor-pointer select-none" onclick="sortBy('${k}')">${l}${SORT.k === k ? (SORT.dir === 1 ? ' ▲' : ' ▼') : ''}</th>`;
   $('#lcount').textContent = `(${rows.length})`;
-  $('#tbl').innerHTML = `<table class="w-full"><thead class="border-b bg-slate-50"><tr>${th('lead_code', 'ID')}${th('full_name', 'Name')}${th('mobile', 'Mobile')}${th('email', 'Email')}${th('program', 'Program')}${th('total_budget', 'Budget')}${th('specialization', 'Specialization')}<th class="th">Locations</th>${th('grad', 'Grad %')}${th('pct', 'Percentile')}${th('lead_status', 'Status')}${th('priority', 'Priority')}${th('next_followup', 'Next Follow-up')}<th class="th">Actions</th></tr></thead><tbody>
+  $('#tbl').innerHTML = `<table class="w-full"><thead class="border-b border-navy-100 bg-navy-50/70"><tr>${th('lead_code', 'ID')}${th('full_name', 'Name')}${th('mobile', 'Mobile')}${th('email', 'Email')}${th('program', 'Program')}${th('total_budget', 'Budget')}${th('specialization', 'Specialization')}<th class="th">Locations</th>${th('grad', 'Grad %')}${th('pct', 'Percentile')}${th('lead_status', 'Status')}${th('priority', 'Priority')}${th('next_followup', 'Next Follow-up')}<th class="th">Actions</th></tr></thead><tbody>
     ${view.map((l) => `<tr class="border-b border-slate-100 hover:bg-navy-50/40"><td class="td text-slate-500">${esc(l.lead_code)}</td><td class="td font-medium"><a class="text-navy-700 hover:underline" href="#/leads/${l.id}">${esc(l.full_name)}</a></td><td class="td">${esc(l.mobile)}</td><td class="td">${esc(l.email || '—')}</td><td class="td">${esc(l.program || '—')}</td><td class="td">${inr(l.total_budget)}</td><td class="td">${esc(l.specialization || '—')}</td><td class="td">${esc((l.locations || []).join(', ') || '—')}</td><td class="td">${fmtRes(gradOf(l))}</td><td class="td">${bestPct(l) ?? '—'}</td><td class="td">${badge(l.lead_status)}</td><td class="td">${badge(l.priority)}</td><td class="td whitespace-nowrap">${fmtDT(l.next_followup)}</td>
       <td class="td whitespace-nowrap"><a class="text-navy-600 hover:underline" href="#/leads/${l.id}">View</a> · <a class="text-navy-600 hover:underline" href="#/leads/${l.id}/edit">Edit</a>${isAdmin() ? ` · <button class="text-red-600 hover:underline" onclick="askDelete('${l.id}')">Delete</button>` : ''}</td></tr>`).join('') || '<tr><td colspan="14" class="p-8 text-center text-slate-400">No leads match.</td></tr>'}</tbody></table>`;
   $('#pg').innerHTML = `<span class="text-slate-500">Page ${PG + 1} of ${pages}</span><div class="flex gap-2"><button class="btn-outline" ${PG === 0 ? 'disabled' : ''} onclick="PG--;drawLeads()">Previous</button><button class="btn-outline" ${PG + 1 >= pages ? 'disabled' : ''} onclick="PG++;drawLeads()">Next</button></div>`;
@@ -285,7 +284,7 @@ async function leadForm(id) {
   const ai = (lvl, k, label, a = '') => inp(`${lvl}__${k}`, label, A(lvl)[k] ?? '', a);
   const as = (lvl, k, label, list, def = '') => sel(`${lvl}__${k}`, label, list, A(lvl)[k] ?? def);
   const g = A('graduation');
-  main().innerHTML = `<form id="lform" class="mx-auto max-w-5xl space-y-3" novalidate><h1 class="text-2xl font-extrabold text-navy-800">${id ? 'Edit Lead' : 'Add New Lead'}</h1>
+  main().innerHTML = `<form id="lform" class="mx-auto max-w-5xl space-y-3" novalidate><h1 class="text-2xl font-bold text-navy-800">${id ? 'Edit Lead' : 'Add New Lead'}</h1>
   ${sec('1. Personal Details', `<div class="${GRID}">
     ${inp('full_name', 'Full Name', l.full_name, '', true)}
     ${fld('Mobile Number', `<input class="input" name="mobile" inputmode="numeric" value="${esc(l.mobile || '')}" onblur="checkDup(this,'${id || ''}')">`, true)}
@@ -295,7 +294,7 @@ async function leadForm(id) {
   ${sec('2. Admission Preferences', `<div class="${GRID}">${sel('program', 'Preferred Program', K.PROGRAMS, l.program)}${sel('specialization', 'Preferred Specialization', K.SPECS, l.specialization)}
     ${inp('total_budget', 'Total Budget (INR)', l.total_budget, 'type="number" min="0"')}${inp('annual_fee_budget', 'Preferred Annual Fee Budget (INR)', l.annual_fee_budget, 'type="number" min="0"')}
     ${inp('preferred_college', 'Preferred College Name', l.preferred_college)}${sel('hostel', 'Hostel Required', K.YN, l.hostel)}${sel('study_mode', 'Study Mode', K.MODES, l.study_mode)}${sel('study_abroad', 'Study Abroad Preference', K.YNU, l.study_abroad)}</div>
-    <div class="mt-3"><span class="label">Preferred Locations (select multiple)</span><div class="flex flex-wrap gap-2">${K.LOCS.map((x) => `<label class="cursor-pointer"><input type="checkbox" name="loc" value="${x}" class="peer hidden" ${(l.locations || []).includes(x) ? 'checked' : ''}><span class="inline-block rounded-full border border-slate-300 px-3 py-1 text-sm text-slate-600 peer-checked:border-navy-700 peer-checked:bg-navy-700 peer-checked:text-white">${x}</span></label>`).join('')}</div></div>`)}
+    <div class="mt-3"><span class="label">Preferred Locations (select multiple)</span><div class="flex flex-wrap gap-2">${K.LOCS.map((x) => `<label class="cursor-pointer"><input type="checkbox" name="loc" value="${x}" class="peer hidden" ${(l.locations || []).includes(x) ? 'checked' : ''}><span class="inline-block rounded-full border border-slate-300 px-3 py-1 text-sm text-slate-600 peer-checked:border-brand-600 peer-checked:bg-brand-600 peer-checked:text-white">${x}</span></label>`).join('')}</div></div>`)}
   ${sec('3. Entrance Examinations', `<div id="exams" class="space-y-3">${exams.map(examRow).join('')}</div><button type="button" class="btn-outline mt-3" onclick="$('#exams').insertAdjacentHTML('beforeend', examRow())">+ Add Exam Record</button>`)}
   ${sec('4. Class 10 Details', `<div class="${GRID}">${ai('class10', 'board', 'Board')}${ai('class10', 'passing_year', 'Passing Year', 'type="number"')}${as('class10', 'result_type', 'Result Type', K.RES, 'Percentage')}${ai('class10', 'result_value', 'Percentage / CGPA', 'type="number" step="any"')}</div>`)}
   ${sec('5. Class 12 / Diploma Details', `<div class="${GRID}">${as('class12', 'qualification_type', 'Qualification Type', K.QUAL, 'Class 12')}${ai('class12', 'board', 'Board or Institution')}${ai('class12', 'stream', 'Stream')}${ai('class12', 'passing_year', 'Passing Year', 'type="number"')}${as('class12', 'result_type', 'Result Type', K.RES, 'Percentage')}${ai('class12', 'result_value', 'Percentage / CGPA', 'type="number" step="any"')}</div>`)}
@@ -370,6 +369,30 @@ async function saveLead(id) {
   } catch (err) { toast(err.message || 'Save failed', true); btn.disabled = false; btn.textContent = id ? 'Save Changes' : 'Add Lead'; }
 }
 
+// ---------- quick add (name + mobile + source only) ----------
+function quickAdd() {
+  modal('Quick Add Lead', `<form id="qaf" class="space-y-4" novalidate><p class="text-sm text-slate-500">Save a lead with just the basics. Add the full details later from the lead's Edit page.</p>
+    ${inp('full_name', 'Full Name', '', '', true)}
+    ${fld('Mobile Number', `<input class="input" name="mobile" inputmode="numeric" onblur="checkDup(this,'')">`, true)}
+    ${fld('Lead Source', `<input class="input" name="lead_source" list="srcs" placeholder="Website, Walk-in, Referral…"><datalist id="srcs">${K.SOURCES.map((x) => `<option value="${x}">`).join('')}</datalist>`)}
+    <div id="dupbox"></div>
+    <div class="flex flex-wrap justify-end gap-2"><button type="button" class="btn-outline" onclick="closeModal()">Cancel</button><button type="button" class="btn-outline" onclick="saveQuick(true)">Save & add another</button><button class="btn-primary">Save lead</button></div></form>`);
+  $('#qaf').onsubmit = (e) => { e.preventDefault(); saveQuick(false); };
+  $('#qaf').full_name.focus();
+}
+async function saveQuick(again) {
+  const f = $('#qaf'); $$('.border-red-500', f).forEach((x) => x.classList.remove('border-red-500'));
+  const name = f.full_name.value.trim();
+  if (!name) { f.full_name.classList.add('border-red-500'); return toast('Full name is required', true); }
+  if (!validMobile(f.mobile.value)) { f.mobile.classList.add('border-red-500'); return toast('Enter a valid 10-digit Indian mobile number', true); }
+  const btns = $$('button', f); btns.forEach((b) => (b.disabled = true));
+  const { error } = await sb.from('leads').insert({ full_name: name, mobile: normMobile(f.mobile.value), lead_source: nn(f.lead_source.value.trim()), lead_date: todayStr(), lead_status: 'New', priority: 'Warm', assigned_to: ME.id, locations: [] });
+  if (error) { toast(error.message, true); btns.forEach((b) => (b.disabled = false)); return; }
+  toast('Lead added'); closeModal();
+  const h = location.hash; if (!h || h === '#/' || h === '#/leads' || h === '#/followups') route();
+  if (again) quickAdd();
+}
+
 // ---------- student profile ----------
 async function profilePage(id) {
   const { data: l, error } = await sb.from('leads').select('*, lead_exams(*), lead_academics(*), assignee:profiles!leads_assigned_to_fkey(full_name)').eq('id', id).single();
@@ -382,8 +405,8 @@ async function profilePage(id) {
   const kv = (k, v) => `<div><div class="label">${k}</div><div class="text-sm">${v === null || v === undefined || v === '' ? '—' : esc(v)}</div></div>`;
   const card = (t, body) => `<div class="card p-4"><h2 class="mb-3 font-semibold text-navy-800">${t}</h2><div class="grid grid-cols-2 gap-3 md:grid-cols-3">${body}</div></div>`;
   main().innerHTML = `<div class="mx-auto max-w-5xl space-y-4">
-    <div class="flex flex-wrap items-start justify-between gap-2"><div><h1 class="text-2xl font-extrabold text-navy-800">${esc(l.full_name)} <span class="text-base font-normal text-slate-400">${esc(l.lead_code)}</span></h1><div class="mt-1 flex gap-2">${badge(l.lead_status)}${badge(l.priority)}</div></div>
-      <div class="flex gap-2"><a class="btn-primary" href="tel:+91${esc(l.mobile)}" title="Call ${esc(l.full_name)}">📞 Call Now</a><a class="btn-outline" target="_blank" rel="noreferrer" href="https://wa.me/91${esc(l.mobile)}">WhatsApp</a><a class="btn-primary" href="#/leads/${l.id}/edit">Edit</a>${isAdmin() ? `<button class="btn-danger" onclick="askDelete('${l.id}',true)">Delete</button>` : ''}</div></div>
+    <div class="flex flex-wrap items-start justify-between gap-2"><div class="flex items-center gap-4"><div class="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-navy-800 font-display text-2xl font-bold text-white">${esc((l.full_name || '?').trim().charAt(0).toUpperCase())}</div><div><h1 class="text-2xl font-bold text-navy-800">${esc(l.full_name)} <span class="text-base font-normal text-slate-400">${esc(l.lead_code)}</span></h1><div class="mt-1 flex gap-2">${badge(l.lead_status)}${badge(l.priority)}</div></div></div>
+      <div class="flex gap-2"><a class="btn-outline" href="tel:${esc(l.mobile)}">Call</a><a class="btn-outline" target="_blank" rel="noreferrer" href="https://wa.me/91${esc(l.mobile)}">WhatsApp</a><a class="btn-primary" href="#/leads/${l.id}/edit">Edit</a>${isAdmin() ? `<button class="btn-danger" onclick="askDelete('${l.id}',true)">Delete</button>` : ''}</div></div>
     ${card('Personal Details', kv('Mobile', l.mobile) + kv('Alternate Mobile', l.alt_mobile) + kv('Email', l.email) + kv('City', l.city) + kv('State', l.state) + kv('Lead Source', l.lead_source) + kv('Lead Date', fmtDate(l.lead_date)) + kv('Counsellor', l.assignee?.full_name))}
     ${card('Admission Preferences', kv('Program', l.program) + kv('Specialization', l.specialization) + kv('Locations', (l.locations || []).join(', ')) + kv('Total Budget', inr(l.total_budget)) + kv('Annual Fee Budget', inr(l.annual_fee_budget)) + kv('Preferred College', l.preferred_college) + kv('Hostel', l.hostel) + kv('Study Mode', l.study_mode) + kv('Study Abroad', l.study_abroad))}
     <div class="card p-4"><h2 class="mb-3 font-semibold text-navy-800">Entrance Exams</h2><div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr><th class="th">Exam</th><th class="th">Year</th><th class="th">Status</th><th class="th">Score</th><th class="th">Percentile</th><th class="th">Target</th></tr></thead><tbody>
@@ -418,10 +441,10 @@ async function followupsPage() {
 function drawFollow() {
   const s = sod(), e = eod(), t = (f) => new Date(f.due_at).getTime();
   const lists = { Today: FROWS.filter((f) => f.status === 'pending' && t(f) >= s && t(f) <= e), Overdue: FROWS.filter((f) => f.status === 'pending' && t(f) < s), Upcoming: FROWS.filter((f) => f.status === 'pending' && t(f) > e), Completed: FROWS.filter((f) => f.status === 'completed').reverse() };
-  main().innerHTML = `<div class="space-y-4"><h1 class="text-2xl font-extrabold text-navy-800">Follow-ups</h1>
-    <div class="flex flex-wrap gap-2">${Object.keys(lists).map((x) => `<button onclick="FTAB='${x}';drawFollow()" class="rounded-full px-4 py-2 text-sm font-semibold transition ${FTAB === x ? 'bg-gradient-to-br from-navy-500 to-navy-700 text-white shadow-md shadow-red-500/25' : 'border border-slate-200 bg-white text-slate-600 hover:bg-navy-50'}">${x} (${lists[x].length})</button>`).join('')}</div>
-    <div class="card overflow-x-auto"><table class="w-full"><thead class="border-b bg-slate-50"><tr><th class="th">When</th><th class="th">Student</th><th class="th">Mobile</th><th class="th">Status</th><th class="th">${FTAB === 'Completed' ? 'Outcome' : 'Remarks'}</th><th class="th"></th></tr></thead><tbody>
-    ${lists[FTAB].map((f) => `<tr class="border-b border-slate-100"><td class="td whitespace-nowrap ${FTAB === 'Overdue' ? 'text-red-600' : ''}">${fmtDT(FTAB === 'Completed' ? f.completed_at : f.due_at)}</td><td class="td"><a class="font-medium text-navy-700 hover:underline" href="#/leads/${f.leads?.id}">${esc(f.leads?.full_name)}</a> <span class="text-xs text-slate-400">${esc(f.leads?.lead_code)}</span></td><td class="td"><a class="text-navy-600" href="tel:+91${esc(f.leads?.mobile)}">${esc(f.leads?.mobile)}</a></td><td class="td">${badge(f.leads?.lead_status)}</td><td class="td text-slate-600">${esc(FTAB === 'Completed' ? [f.outcome, f.remarks].filter(Boolean).join(' — ') : f.remarks || '—')}</td><td class="td">${f.status === 'pending' ? `<button class="btn-primary !py-1" onclick="openFU('${f.id}')">Record outcome</button>` : ''}</td></tr>`).join('') || '<tr><td colspan="6" class="p-8 text-center text-slate-400">Nothing here.</td></tr>'}</tbody></table></div></div>`;
+  main().innerHTML = `<div class="space-y-4"><h1 class="text-2xl font-bold text-navy-800">Follow-ups</h1>
+    <div class="flex flex-wrap gap-2">${Object.keys(lists).map((x) => `<button onclick="FTAB='${x}';drawFollow()" class="rounded-xl px-4 py-2 text-sm font-semibold ${FTAB === x ? 'bg-navy-800 text-white' : 'border border-navy-100 bg-white text-navy-700 hover:bg-navy-50'}">${x} (${lists[x].length})</button>`).join('')}</div>
+    <div class="card overflow-x-auto"><table class="w-full"><thead class="border-b border-navy-100 bg-navy-50/70"><tr><th class="th">When</th><th class="th">Student</th><th class="th">Mobile</th><th class="th">Status</th><th class="th">${FTAB === 'Completed' ? 'Outcome' : 'Remarks'}</th><th class="th"></th></tr></thead><tbody>
+    ${lists[FTAB].map((f) => `<tr class="border-b border-slate-100"><td class="td whitespace-nowrap ${FTAB === 'Overdue' ? 'text-red-600' : ''}">${fmtDT(FTAB === 'Completed' ? f.completed_at : f.due_at)}</td><td class="td"><a class="font-medium text-navy-700 hover:underline" href="#/leads/${f.leads?.id}">${esc(f.leads?.full_name)}</a> <span class="text-xs text-slate-400">${esc(f.leads?.lead_code)}</span></td><td class="td"><a class="text-navy-600" href="tel:${esc(f.leads?.mobile)}">${esc(f.leads?.mobile)}</a></td><td class="td">${badge(f.leads?.lead_status)}</td><td class="td text-slate-600">${esc(FTAB === 'Completed' ? [f.outcome, f.remarks].filter(Boolean).join(' — ') : f.remarks || '—')}</td><td class="td">${f.status === 'pending' ? `<button class="btn-primary !py-1" onclick="openFU('${f.id}')">Record outcome</button>` : ''}</td></tr>`).join('') || '<tr><td colspan="6" class="p-8 text-center text-slate-400">Nothing here.</td></tr>'}</tbody></table></div></div>`;
 }
 function openFU(fid) {
   const f = FROWS.find((x) => x.id === fid);
@@ -455,7 +478,7 @@ const download = (blob, name) => { const a = document.createElement('a'); a.href
 
 async function importPage() {
   IMP = { headers: [], raw: [], map: {}, name: '', dbDup: [], skipDup: true, assignTo: ME.id };
-  main().innerHTML = `<div class="space-y-6"><h1 class="text-2xl font-extrabold text-navy-800">Import / Export</h1>
+  main().innerHTML = `<div class="space-y-6"><h1 class="text-2xl font-bold text-navy-800">Import / Export</h1>
     <div class="card space-y-3 p-4"><h2 class="font-semibold text-navy-800">Export leads</h2><p class="text-sm text-slate-500">${isAdmin() ? 'Exports all leads.' : 'Exports your assigned leads.'}</p><div class="flex gap-2"><button class="btn-primary" onclick="doExport('xlsx',this)">Export Excel (.xlsx)</button><button class="btn-outline" onclick="doExport('csv',this)">Export CSV</button></div></div>
     <div class="card space-y-4 p-4"><div class="flex flex-wrap items-center justify-between gap-2"><h2 class="font-semibold text-navy-800">Import leads</h2><button class="text-sm text-navy-600 underline" onclick="downloadTemplate()">Download template</button></div>
     <input type="file" accept=".xlsx,.xls,.csv" onchange="onImpFile(this.files[0])" class="block text-sm"><div id="impBody"></div></div></div>`;
@@ -534,9 +557,9 @@ async function doImport() {
 // ---------- users (admin) ----------
 async function usersPage() {
   const { data } = await sb.from('profiles').select('*').order('created_at');
-  main().innerHTML = `<div class="space-y-4"><h1 class="text-2xl font-extrabold text-navy-800">Users</h1>
+  main().innerHTML = `<div class="space-y-4"><h1 class="text-2xl font-bold text-navy-800">Users</h1>
     <div class="rounded-lg bg-navy-50 p-3 text-sm text-navy-800">To add a counsellor: Supabase Dashboard → Authentication → Users → Add user (or ask them to use "Create an account" on the login page). They appear here as Counsellor; promote to Admin if needed.</div>
-    <div class="card overflow-x-auto"><table class="w-full"><thead class="border-b bg-slate-50"><tr><th class="th">Name</th><th class="th">Email</th><th class="th">Role</th><th class="th">Active</th></tr></thead><tbody>
+    <div class="card overflow-x-auto"><table class="w-full"><thead class="border-b border-navy-100 bg-navy-50/70"><tr><th class="th">Name</th><th class="th">Email</th><th class="th">Role</th><th class="th">Active</th></tr></thead><tbody>
     ${(data || []).map((u) => `<tr class="border-b border-slate-100"><td class="td"><input class="input !py-1" value="${esc(u.full_name || '')}" onchange="updUser('${u.id}',{full_name:this.value})"></td><td class="td">${esc(u.email)}</td>
       <td class="td"><select class="input !py-1" onchange="updUser('${u.id}',{role:this.value})"><option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option><option value="counsellor" ${u.role === 'counsellor' ? 'selected' : ''}>Counsellor</option></select></td>
       <td class="td"><input type="checkbox" ${u.active ? 'checked' : ''} onchange="updUser('${u.id}',{active:this.checked})"></td></tr>`).join('')}</tbody></table></div></div>`;
@@ -556,12 +579,6 @@ async function updUser(id, patch) {
     return;
   }
   $('#app').innerHTML = spin();
-  const hs = location.hash, fromMail = /[#&]type=(signup|invite|email_change)/.test(hs), mailErr = /[#&]error(_description)?=/.test(hs);
-  if (fromMail || mailErr) {
-    if (fromMail) { await sb.auth.getSession(); await sb.auth.signOut(); }
-    history.replaceState(null, '', location.pathname + location.search);
-    renderLogin('in');
-    if (fromMail) toast('Email confirmed successfully. Please sign in.'); else toast('This confirmation link is invalid or has expired. Please sign in or create the account again.', true);
-  } else { const { data } = await sb.auth.getSession(); await afterAuth(data.session); }
-  sb.auth.onAuthStateChange((ev, s) => { if (!SUPPRESS_AUTH && (ev === 'SIGNED_IN' || ev === 'SIGNED_OUT')) setTimeout(() => afterAuth(s), 0); });
+  const { data } = await sb.auth.getSession(); await afterAuth(data.session);
+  sb.auth.onAuthStateChange((ev, s) => { if (ev === 'SIGNED_IN' || ev === 'SIGNED_OUT') setTimeout(() => afterAuth(s), 0); });
 })();
