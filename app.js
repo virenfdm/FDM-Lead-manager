@@ -95,10 +95,11 @@ const isAdmin = () => ME && ME.role === 'admin';
 const main = () => $('#main');
 
 // ---------- auth ----------
+const LOGIN_PHOTOS = ['images/login-1.jpg', 'images/login-2.jpg', 'images/login-3.jpg', 'images/login-4.jpg']; // MBA photos shown behind the login panel (see images/README.txt)
 function renderLogin(mode = 'in') {
   $('#app').innerHTML = `<div class="grid min-h-screen lg:grid-cols-[1.05fr_1fr]">
-    <section class="relative hidden flex-col justify-between overflow-hidden bg-gradient-to-br from-brand-500 via-brand-600 to-brand-700 p-12 text-white lg:flex">
-      <img src="FDM-white.png" alt="FDM - The future begins here" class="w-56 self-start">
+    <section class="relative hidden flex-col justify-between overflow-hidden bg-gradient-to-br from-brand-500 via-brand-600 to-brand-700 p-12 text-white lg:flex"><div class="absolute inset-0">${LOGIN_PHOTOS.map((src, i) => `<img src="${src}" alt="" class="lph" style="animation-delay:${i * 6}s" onerror="this.remove()">`).join('')}<div class="absolute inset-0 bg-gradient-to-br from-brand-600/85 via-brand-600/80 to-brand-700/95"></div></div>
+      <img src="FDM-white.png" alt="FDM - The future begins here" class="relative z-20 w-80 max-w-full self-start drop-shadow-[0_6px_18px_rgba(91,15,12,.35)]">
       <div class="relative z-10 max-w-md"><h2 class="text-5xl font-semibold leading-[1.05]">Every seat starts with a conversation.</h2><p class="mt-5 text-lg text-white/90">Track every MBA and PGDM lead from the first call to a confirmed admission.</p>
         <div class="mt-8 flex flex-wrap gap-2 text-sm font-medium">${['New', 'Contacted', 'Interested', 'Applied', 'Offer', 'Confirmed'].map((x) => `<span class="rounded-full bg-white/15 px-3 py-1">${x}</span>`).join('')}</div></div>
       <svg viewBox="0 0 460 330" class="relative z-10 mx-auto h-auto max-h-[36vh] w-full max-w-md" role="img" aria-label="Illustration of admissions progress rising step by step to a graduation cap">
@@ -114,7 +115,7 @@ function renderLogin(mode = 'in') {
       <div class="pointer-events-none absolute inset-0" style="background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:radial-gradient(circle at 80% 100%,#000,transparent 70%);mask-image:radial-gradient(circle at 80% 100%,#000,transparent 70%)"></div><div class="pointer-events-none absolute -bottom-32 -right-32 h-[26rem] w-[26rem] rounded-full border-[56px] border-white/10"></div><div class="pointer-events-none absolute -left-24 top-1/3 h-64 w-64 rounded-full border-[28px] border-white/5"></div>
     </section>
     <section class="relative flex items-center justify-center overflow-hidden bg-white p-6 sm:p-12"><div class="pointer-events-none absolute right-0 top-0 h-72 w-72" style="background-image:radial-gradient(#c3cae3 1.4px,transparent 1.4px);background-size:20px 20px;-webkit-mask-image:radial-gradient(circle at 100% 0,#000,transparent 70%);mask-image:radial-gradient(circle at 100% 0,#000,transparent 70%)"></div><div class="pointer-events-none absolute -bottom-28 -left-28 h-72 w-72 rounded-full bg-brand-50"></div><form id="lf" class="relative w-full max-w-sm space-y-5">
-      <img src="FDM-logo.png" alt="FDM - The future begins here" class="h-14 w-auto lg:hidden">
+      <img src="FDM-logo.png" alt="FDM - The future begins here" class="w-64 max-w-full lg:hidden">
       <div><h1 class="text-3xl font-bold text-navy-800">${mode === 'in' ? 'Welcome back' : 'Create your account'}</h1><p class="mt-1.5 text-sm text-slate-500">${mode === 'in' ? 'Sign in to MBA Admission Lead Manager' : 'The first account becomes Admin'}</p></div>
       ${mode === 'up' ? '<div><label class="label">Full name</label><input class="input" name="name" required></div>' : ''}
       <div><label class="label">Email</label><input type="email" class="input" name="email" required></div>
@@ -146,13 +147,13 @@ async function afterAuth(session) {
   renderShell(); route();
 }
 function renderShell() {
-  const items = [['dashboard', 'Dashboard', '#/'], ['leads', 'Leads', '#/leads'], ['followups', 'Follow-ups', '#/followups'], ['import', 'Import / Export', '#/import']];
+  const items = [['dashboard', 'Dashboard', '#/'], ['leads', 'Leads', '#/leads'], ['pipeline', 'Pipeline', '#/pipeline'], ['followups', 'Follow-ups', '#/followups'], ['import', 'Import / Export', '#/import']];
   if (isAdmin()) items.push(['users', 'Users', '#/users']);
-  const IC = { dashboard: '<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>', leads: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 4.6a3.5 3.5 0 010 6.8M18 14.7c2 .6 3.2 2.3 3.5 5.3"/>', followups: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', import: '<path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v3h16v-3"/>', users: '<circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 4-6 8-6s7.2 2 8 6"/>' };
+  const IC = { dashboard: '<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>', leads: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 4.6a3.5 3.5 0 010 6.8M18 14.7c2 .6 3.2 2.3 3.5 5.3"/>', pipeline: '<rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="10" rx="1.5"/><rect x="17" y="4" width="4" height="13" rx="1.5"/>', followups: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', import: '<path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v3h16v-3"/>', users: '<circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 4-6 8-6s7.2 2 8 6"/>' };
   $('#app').innerHTML = `<div class="min-h-screen md:flex">
-    <header class="flex items-center justify-between border-b border-navy-100 bg-white px-4 py-3 md:hidden"><img src="FDM-logo.png" alt="FDM" class="h-9 w-auto"><button class="grid h-10 w-10 place-items-center rounded-xl border border-navy-100 text-xl text-navy-800" aria-label="Menu" onclick="$('#side').classList.toggle('hidden')">☰</button></header>
+    <header class="flex items-center justify-between border-b border-navy-100 bg-white px-4 py-3 md:hidden"><img src="FDM-logo.png" alt="FDM" class="h-12 w-auto"><button class="grid h-10 w-10 place-items-center rounded-xl border border-navy-100 text-xl text-navy-800" aria-label="Menu" onclick="$('#side').classList.toggle('hidden')">☰</button></header>
     <aside id="side" class="hidden w-full shrink-0 flex-col border-r border-navy-100 bg-white md:sticky md:top-0 md:flex md:h-screen md:w-64">
-      <div class="hidden px-6 pb-1 pt-7 md:block"><img src="FDM-logo.png" alt="FDM - The future begins here" class="w-40"></div>
+      <div class="hidden px-6 pb-1 pt-7 md:block"><img src="FDM-logo.png" alt="FDM - The future begins here" class="w-52"></div>
       <div class="px-6 pb-4 pt-3 font-display text-sm font-semibold text-slate-500">MBA Admission Lead Manager</div>
       <nav class="flex-1 space-y-1 px-3">${items.map(([k, l, h]) => `<a data-nav="${k}" href="${h}" onclick="if(innerWidth<768)$('#side').classList.add('hidden')" class="navlink"><svg viewBox="0 0 24 24">${IC[k]}</svg>${l}</a>`).join('')}
       <a href="#/leads/new" onclick="if(innerWidth<768)$('#side').classList.add('hidden')" class="btn-primary mt-4 w-full">+ Add Lead</a>
@@ -173,6 +174,7 @@ function route() {
     if (!h) return dashboardPage();
     if (p[0] === 'leads') { if (!p[1]) return leadsPage(); if (p[1] === 'new') return leadForm(); if (p[2] === 'edit') return leadForm(p[1]); return profilePage(p[1]); }
     if (p[0] === 'followups') return followupsPage();
+    if (p[0] === 'pipeline') return pipelinePage();
     if (p[0] === 'import') return importPage();
     if (p[0] === 'users' && isAdmin()) return usersPage();
     location.hash = '#/';
@@ -202,7 +204,9 @@ async function dashboardPage() {
       <p class="mt-2 max-w-md text-navy-100">${today.length ? `${today.length} follow-up${today.length === 1 ? ' is' : 's are'} due today.` : 'No follow-ups are due today.'}${over.length ? ` ${over.length} overdue need${over.length === 1 ? 's' : ''} a call.` : ''}</p></div>
       <div class="flex items-center gap-6"><div><div class="font-display text-5xl font-bold">${today.length}</div><div class="text-sm text-navy-200">due today</div></div><div class="h-12 w-px bg-white/20"></div><div><div class="font-display text-5xl font-bold ${over.length ? 'text-brand-100' : ''}">${over.length}</div><div class="text-sm text-navy-200">overdue</div></div></div></div>
     <div class="relative mt-6 flex flex-wrap gap-2"><a href="#/leads/new" class="btn-primary">+ Add Lead</a><button class="btn bg-white/10 text-white hover:bg-white/20" onclick="quickAdd()">Quick Add</button><a href="#/followups" class="btn bg-white/10 text-white hover:bg-white/20">Open follow-ups</a></div></section>
+    <div class="relative"><svg class="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input class="w-full rounded-full border border-navy-100 bg-white py-4 pl-14 pr-6 text-base shadow-[0_12px_30px_-18px_rgba(20,28,64,.35)] placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-100" placeholder="Search any lead by name, mobile, email or ID, then press Enter…" onkeydown="if(event.key==='Enter'){F={...EMPTY_F,q:this.value};PG=0;location.hash='#/leads'}"></div>
     <div class="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-5">${stats.map(([l, n, c]) => `<div class="card p-5 transition duration-200 hover:-translate-y-1 hover:shadow-[0_18px_30px_-18px_rgba(20,28,64,.35)]"><div class="flex items-center gap-2 text-xs font-semibold text-slate-500"><span class="h-2.5 w-2.5 rounded-full ring-4 ring-slate-100 ${c}"></span>${l}</div><div class="mt-3 font-display text-4xl font-bold text-navy-800">${n}</div></div>`).join('')}</div>
+    <div class="card p-5"><div class="mb-4 flex items-center justify-between"><h2 class="font-semibold text-navy-800">Admission funnel</h2><a href="#/pipeline" class="text-sm font-semibold text-brand-700 hover:underline">Open pipeline board →</a></div><div class="grid gap-3 sm:grid-cols-5">${['New', 'Interested', 'Application Submitted', 'Offer Received', 'Admission Confirmed'].map((st, i) => { const n = cnt(st), pc = leads.length ? Math.round((n / leads.length) * 100) : 0; return `<div class="rounded-2xl bg-navy-50/70 p-4"><div class="text-xs font-semibold text-slate-500">${i + 1}. ${st}</div><div class="mt-1 font-display text-3xl font-bold text-navy-800">${n}</div><div class="mt-3 h-1.5 rounded-full bg-white"><div class="h-1.5 rounded-full bg-gradient-to-r from-brand-500 to-navy-600" style="width:${pc}%"></div></div><div class="mt-1 text-xs text-slate-400">${pc}% of leads</div></div>`; }).join('')}</div></div>
     <div class="grid gap-6 lg:grid-cols-2"><div class="card p-4"><h2 class="mb-3 font-semibold text-navy-800">Leads by Status</h2><div class="space-y-2">${by.map(([x, n]) => `<div class="flex items-center gap-2 text-xs"><div class="w-36 shrink-0 text-slate-600">${x}</div><div class="h-3 flex-1 rounded-full bg-navy-50"><div class="h-3 rounded-full bg-brand-500" style="width:${(n / max) * 100}%"></div></div><div class="w-8 text-right font-medium">${n}</div></div>`).join('')}</div></div>
     <div class="card p-4"><div class="mb-3 flex justify-between"><h2 class="font-semibold text-navy-800">Upcoming Follow-ups</h2><a href="#/followups" class="text-sm text-navy-600 underline">View all</a></div>
       ${upList.map((f) => `<a href="#/leads/${f.leads?.id}" class="flex justify-between border-b border-slate-100 py-2 text-sm hover:bg-navy-50"><span>${esc(f.leads?.full_name)} <span class="text-xs text-slate-400">${esc(f.leads?.lead_code)}</span></span><span class="${t(f) < s ? 'text-red-600' : 'text-slate-600'}">${fmtDT(f.due_at)}</span></a>`).join('') || '<p class="text-sm text-slate-400">No pending follow-ups.</p>'}</div></div>
@@ -441,6 +445,30 @@ async function addInteraction(id) {
   if (error) { toast(error.message, true); b.disabled = false; b.textContent = 'Log Interaction'; return; }
   toast('Interaction logged'); profilePage(id);
 }
+
+// ---------- pipeline board ----------
+let PIPE = [];
+async function pipelinePage() {
+  PIPE = await fetchAll('leads', 'id,lead_code,full_name,program,specialization,total_budget,lead_status,priority,next_followup');
+  main().innerHTML = `<div class="space-y-5"><div class="flex flex-wrap items-end justify-between gap-3"><div><h1 class="text-2xl font-bold text-navy-800">Pipeline</h1><p class="text-sm text-slate-500">Drag a lead to a new stage, or use the stage menu on its card.</p></div><a href="#/leads/new" class="btn-primary">+ Add Lead</a></div>
+    <div id="pboard" class="-mx-4 flex items-start gap-4 overflow-x-auto px-4 pb-4 md:-mx-8 md:px-8"></div></div>`;
+  drawPipe();
+}
+function drawPipe() {
+  $('#pboard').innerHTML = K.STATUS.map((st) => { const rows = PIPE.filter((l) => l.lead_status === st);
+    return `<section class="w-72 shrink-0 rounded-3xl bg-navy-50/80 p-3" ondragover="event.preventDefault()" ondrop="dropLead(event,'${st}')"><div class="mb-3 flex items-center justify-between px-1">${badge(st)}<span class="text-xs font-semibold text-slate-500">${rows.length}</span></div>
+    ${rows.map((l) => `<article draggable="true" ondragstart="event.dataTransfer.setData('text/plain','${l.id}')" class="mb-3 cursor-grab rounded-2xl border border-navy-100 bg-white p-3.5 shadow-sm transition hover:shadow-md active:cursor-grabbing"><div class="flex items-start justify-between gap-2"><a href="#/leads/${l.id}" class="font-semibold text-navy-800 hover:text-brand-700">${esc(l.full_name)}</a>${badge(l.priority)}</div><div class="mt-0.5 text-xs text-slate-400">${esc(l.lead_code)}</div>
+      <div class="mt-2 text-xs text-slate-600">${esc([l.program, l.specialization].filter(Boolean).join(' · ') || '—')}</div><div class="mt-2 flex items-center justify-between text-xs"><span class="font-semibold text-navy-700">${inr(l.total_budget)}</span><span class="text-slate-500">${l.next_followup ? fmtDT(l.next_followup) : ''}</span></div>
+      <select class="input mt-3 !py-1.5 text-xs" onchange="moveLead('${l.id}',this.value)">${opts(K.STATUS, l.lead_status)}</select></article>`).join('') || '<div class="rounded-2xl border border-dashed border-navy-200 py-6 text-center text-xs text-slate-400">Drop leads here</div>'}</section>`; }).join('');
+}
+async function moveLead(id, st) {
+  const l = PIPE.find((x) => x.id === id); if (!l || l.lead_status === st) return;
+  const prev = l.lead_status; l.lead_status = st; drawPipe();
+  const { error } = await sb.from('leads').update({ lead_status: st }).eq('id', id);
+  if (error) { l.lead_status = prev; drawPipe(); return toast(error.message, true); }
+  toast(`${l.full_name} moved to ${st}`);
+}
+function dropLead(e, st) { e.preventDefault(); moveLead(e.dataTransfer.getData('text/plain'), st); }
 
 // ---------- follow-ups ----------
 let FTAB = 'Today', FROWS = [];
