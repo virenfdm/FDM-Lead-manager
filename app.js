@@ -95,34 +95,49 @@ const isAdmin = () => ME && ME.role === 'admin';
 const main = () => $('#main');
 
 // ---------- auth ----------
-const LOGIN_PHOTOS = ['images/login-1.jpg', 'images/login-2.jpg', 'images/login-3.jpg', 'images/login-4.jpg']; // MBA photos shown behind the login panel (see images/README.txt)
 function renderLogin(mode = 'in') {
-  $('#app').innerHTML = `<div class="grid min-h-screen lg:grid-cols-[1.05fr_1fr]">
-    <section class="relative hidden flex-col justify-between overflow-hidden bg-gradient-to-br from-brand-500 via-brand-600 to-brand-700 p-12 text-white lg:flex"><div class="absolute inset-0">${LOGIN_PHOTOS.map((src, i) => `<img src="${src}" alt="" class="lph" style="animation-delay:${i * 6}s" onerror="this.remove()">`).join('')}<div class="absolute inset-0 bg-gradient-to-br from-brand-600/85 via-brand-600/80 to-brand-700/95"></div></div>
-      <img src="FDM-white.png" alt="FDM - The future begins here" class="relative z-20 w-80 max-w-full self-start drop-shadow-[0_6px_18px_rgba(91,15,12,.35)]">
-      <div class="relative z-10 max-w-md"><h2 class="text-5xl font-semibold leading-[1.05]">Every seat starts with a conversation.</h2><p class="mt-5 text-lg text-white/90">Track every MBA and PGDM lead from the first call to a confirmed admission.</p>
-        <div class="mt-8 flex flex-wrap gap-2 text-sm font-medium">${['New', 'Contacted', 'Interested', 'Applied', 'Offer', 'Confirmed'].map((x) => `<span class="rounded-full bg-white/15 px-3 py-1">${x}</span>`).join('')}</div></div>
-      <svg viewBox="0 0 460 330" class="relative z-10 mx-auto h-auto max-h-[36vh] w-full max-w-md" role="img" aria-label="Illustration of admissions progress rising step by step to a graduation cap">
-        <defs><filter id="sh" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#5b0f0c" flood-opacity=".28"/></filter></defs><circle cx="340" cy="70" r="96" fill="#fff" opacity=".1"/><circle cx="340" cy="70" r="64" fill="#fff" opacity=".12"/><rect x="0" y="313" width="460" height="5" rx="2.5" fill="#fff" opacity=".35"/>
-        <g fill="#fff"><rect x="30" y="250" width="80" height="60" rx="14" opacity=".2"/><rect x="120" y="205" width="80" height="105" rx="14" opacity=".3"/><rect x="210" y="160" width="80" height="150" rx="14" opacity=".45"/><rect x="300" y="112" width="80" height="198" rx="14"/></g>
-        <polyline points="70,250 160,205 250,160 340,112" fill="none" stroke="#fff" stroke-width="2.5" stroke-dasharray="2 8" stroke-linecap="round"/>
-        <g fill="#fff" stroke="#d6362f" stroke-width="4"><circle cx="70" cy="250" r="7"/><circle cx="160" cy="205" r="7"/><circle cx="250" cy="160" r="7"/></g>
-        <g class="fl" filter="url(#sh)"><polygon points="340,38 398,62 340,86 282,62" fill="#141c40"/><path d="M308 76v22c0 12 64 12 64 0V76l-32 14z" fill="#27346b"/><line x1="398" y1="62" x2="398" y2="98" stroke="#141c40" stroke-width="3"/><circle cx="398" cy="102" r="6" fill="#ffe0de"/></g>
-        <g class="fl fl2" filter="url(#sh)"><rect x="20" y="36" width="176" height="66" rx="18" fill="#fff"/><circle cx="54" cy="69" r="17" fill="#ffe0de"/><circle cx="54" cy="64" r="6" fill="#d6362f"/><path d="M42 80c2-8 22-8 24 0" fill="#d6362f"/><rect x="82" y="56" width="82" height="9" rx="4.5" fill="#1c2754"/><rect x="82" y="73" width="56" height="8" rx="4" fill="#c3cae3"/><circle cx="178" cy="44" r="12" fill="#10b981"/><path d="M172 44.5l4 4 7-8" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></g>
-        <g class="fl fl3" filter="url(#sh)"><rect x="20" y="126" width="152" height="42" rx="21" fill="#fff"/><circle cx="44" cy="147" r="7" fill="#10b981"/><text x="60" y="152" font-size="13" font-weight="700" fill="#141c40" font-family="DM Sans, sans-serif">Seat confirmed</text></g>
-        <g filter="url(#sh)"><rect x="394" y="294" width="62" height="16" rx="5" fill="#fff"/><rect x="400" y="278" width="54" height="16" rx="5" fill="#ffe0de"/><rect x="396" y="262" width="58" height="16" rx="5" fill="#27346b"/></g><g fill="#fff"><path d="M236 36l4 10 10 4-10 4-4 10-4-10-10-4 10-4z"/><path d="M430 150l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" opacity=".85"/><path d="M24 214l2.5 6 6 2.5-6 2.5-2.5 6-2.5-6-6-2.5 6-2.5z" opacity=".7"/><circle cx="430" cy="60" r="4" opacity=".6"/><circle cx="206" cy="108" r="3" opacity=".6"/><circle cx="440" cy="230" r="5" opacity=".35"/></g>
-      </svg>
-      <div class="pointer-events-none absolute inset-0" style="background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:radial-gradient(circle at 80% 100%,#000,transparent 70%);mask-image:radial-gradient(circle at 80% 100%,#000,transparent 70%)"></div><div class="pointer-events-none absolute -bottom-32 -right-32 h-[26rem] w-[26rem] rounded-full border-[56px] border-white/10"></div><div class="pointer-events-none absolute -left-24 top-1/3 h-64 w-64 rounded-full border-[28px] border-white/5"></div>
-    </section>
-    <section class="relative flex items-center justify-center overflow-hidden bg-white p-6 sm:p-12"><div class="pointer-events-none absolute right-0 top-0 h-72 w-72" style="background-image:radial-gradient(#c3cae3 1.4px,transparent 1.4px);background-size:20px 20px;-webkit-mask-image:radial-gradient(circle at 100% 0,#000,transparent 70%);mask-image:radial-gradient(circle at 100% 0,#000,transparent 70%)"></div><div class="pointer-events-none absolute -bottom-28 -left-28 h-72 w-72 rounded-full bg-brand-50"></div><form id="lf" class="relative w-full max-w-sm space-y-5">
-      <img src="FDM-logo.png" alt="FDM - The future begins here" class="w-64 max-w-full lg:hidden">
-      <div><h1 class="text-3xl font-bold text-navy-800">${mode === 'in' ? 'Welcome back' : 'Create your account'}</h1><p class="mt-1.5 text-sm text-slate-500">${mode === 'in' ? 'Sign in to MBA Admission Lead Manager' : 'The first account becomes Admin'}</p></div>
-      ${mode === 'up' ? '<div><label class="label">Full name</label><input class="input" name="name" required></div>' : ''}
-      <div><label class="label">Email</label><input type="email" class="input" name="email" required></div>
-      <div><label class="label">Password</label><input type="password" class="input" name="pw" required></div>
-      <div id="lmsg"></div>
-      <button class="btn-primary w-full !py-3" id="lbtn">${mode === 'in' ? 'Sign in' : 'Create account'}</button>
-      <button type="button" class="w-full text-center text-sm font-medium text-navy-600 hover:underline" id="lsw">${mode === 'in' ? 'First time? Create an account' : 'Already have an account? Sign in'}</button></form></section></div>`;
+  const li = 'input lfi !rounded-full !bg-[#f1f3f8] !px-5';
+  $('#app').innerHTML = `<div class="lfit relative overflow-hidden bg-[#f8f8fb]">
+    <div class="pointer-events-none absolute -right-24 -top-28 h-80 w-80 rounded-full bg-gradient-to-br from-brand-100 to-[#f7b3b8]"></div>
+    <div class="pointer-events-none absolute -bottom-40 left-[46%] hidden h-80 w-[30rem] rounded-[50%] bg-[#f7b3b8]/60 lg:block"></div>
+    <div class="pointer-events-none absolute inset-y-0 left-0 hidden w-[58%] lg:block"><svg viewBox="0 0 1100 860" preserveAspectRatio="none" class="h-full w-full overflow-visible">
+      <defs><path id="edge" d="M0 0H1075C1000 80 950 170 962 260C975 360 1010 420 975 520C945 610 905 700 890 860H0Z"/>
+        <linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8f0006"/><stop offset=".5" stop-color="#d1151d"/><stop offset="1" stop-color="#ee2b34"/></linearGradient>
+        <linearGradient id="pk" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f7b3b8" stop-opacity=".55"/><stop offset="1" stop-color="#f7b3b8" stop-opacity="0"/></linearGradient></defs>
+      <use href="#edge" fill="url(#pk)" transform="translate(70 0)"/><use href="#edge" fill="url(#rg)"/>
+      <path d="M0 720C250 640 430 470 650 310C830 180 960 130 1060 10H820C700 150 500 260 280 430C160 520 60 570 0 590Z" fill="#fff" opacity=".07"/>
+      <path d="M0 0H430C330 120 150 200 0 230Z" fill="#5c0003" opacity=".35"/></svg></div>
+    <div class="relative z-10 grid h-full lg:grid-cols-[1.1fr_1fr]">
+      <section class="lfl relative hidden min-h-0 flex-col overflow-hidden text-white lg:flex">
+        <img src="FDM-white.png" alt="FDM - The future begins here" class="lflogo relative z-20 max-w-full self-start drop-shadow-[0_6px_18px_rgba(91,15,12,.35)]">
+        <h2 class="lfh font-sans font-extrabold italic leading-[1.1]" style="letter-spacing:-.02em">Every seat starts<br>with a <span class="relative inline-block rounded-2xl bg-white px-4 pb-1 text-brand-600">conversation.<svg class="absolute inset-x-4 bottom-1.5 h-2" viewBox="0 0 200 8" preserveAspectRatio="none"><path d="M0 6Q100-2 200 5" stroke="#e4413d" stroke-width="3" fill="none" stroke-linecap="round"/></svg></span></h2>
+        <p class="lfp max-w-md font-medium leading-snug">Track every MBA and PGDM lead from the first call to a confirmed admission.</p>
+        <div class="lfc flex max-w-xl flex-wrap gap-2.5">${['New', 'Contacted', 'Interested', 'Applied', 'Offer'].map((x) => `<span class="rounded-full border border-white/60 bg-white/10 px-5 py-1.5 text-sm font-semibold">${x}</span>`).join('')}<span class="inline-flex items-center gap-2 rounded-full border-2 border-white bg-white/10 px-4 py-1.5 text-sm font-semibold"><svg class="h-5 w-5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#fff"/><path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="#d6362f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Confirmed</span></div>
+        <svg viewBox="0 0 660 330" preserveAspectRatio="xMinYMax meet" class="relative z-10 mt-auto min-h-0 w-full max-w-[640px] flex-1" role="img" aria-label="Admission progress rising to a graduation cap">
+          <defs><filter id="sh" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#4a0508" flood-opacity=".35"/></filter>
+            <linearGradient id="bar" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff"/><stop offset=".7" stop-color="#f3e9ee"/><stop offset="1" stop-color="#d9c9d2"/></linearGradient></defs>
+          <g fill="#6d070c" opacity=".5"><rect x="0" y="262" width="300" height="68"/><rect x="18" y="214" width="26" height="60"/><path d="M18 214l13-26 13 26z"/><rect x="62" y="236" width="40" height="40"/><path d="M62 236q20-34 40 0z"/><rect x="118" y="196" width="30" height="80"/><path d="M118 196l15-32 15 32z"/><rect x="160" y="240" width="60" height="36"/><path d="M168 240q22-30 44 0z"/><rect x="236" y="222" width="24" height="54"/><path d="M236 222l12-24 12 24z"/></g>
+          <ellipse cx="420" cy="318" rx="250" ry="8" fill="#4a0508" opacity=".25"/>
+          <g filter="url(#sh)" fill="url(#bar)"><rect x="250" y="272" width="64" height="38" rx="6"/><rect x="322" y="244" width="64" height="66" rx="6"/><rect x="394" y="210" width="64" height="100" rx="6"/><rect x="466" y="160" width="64" height="150" rx="6"/><rect x="538" y="92" width="64" height="218" rx="6"/></g>
+          <g filter="url(#sh)"><path d="M240 268C330 250 450 200 510 130" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round"/><polygon points="532,106 522,142 498,120" fill="#fff"/></g>
+          <g filter="url(#sh)"><polygon points="570,18 652,42 570,66 488,42" fill="#1d2a4d"/><path d="M533 56v26c0 12 74 12 74 0V56l-37 14z" fill="#16213f"/><line x1="652" y1="42" x2="657" y2="88" stroke="#f2b441" stroke-width="3"/><rect x="653" y="86" width="9" height="16" rx="3" fill="#f2b441"/></g>
+          <g stroke="#f6b73c" stroke-width="4" stroke-linecap="round"><path d="M670 22l8-10M682 40l12-4M684 60l12 2"/></g>
+          <g filter="url(#sh)"><rect x="20" y="70" width="176" height="66" rx="18" fill="#fff"/><circle cx="56" cy="95" r="8" fill="#d6362f"/><path d="M40 122c2-12 30-12 32 0z" fill="#d6362f"/><rect x="88" y="90" width="82" height="9" rx="4.5" fill="#1c2754"/><rect x="88" y="107" width="56" height="8" rx="4" fill="#c3cae3"/><circle cx="182" cy="76" r="12" fill="#10b981"/><path d="M176 76.5l4 4 7-8" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></g>
+          <g filter="url(#sh)"><rect x="20" y="152" width="152" height="42" rx="21" fill="#fff"/><circle cx="44" cy="173" r="8" fill="#10b981"/><path d="M40 173l3 3 5-6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/><text x="60" y="178" font-size="13" font-weight="700" fill="#141c40" font-family="DM Sans, sans-serif">Seat confirmed</text></g>
+        </svg>
+      </section>
+      <section class="lfr relative flex min-h-0 justify-center overflow-y-auto p-6 sm:p-10"><form id="lf" class="lff my-auto w-full max-w-md">
+        <img src="FDM-logo.png" alt="FDM - The future begins here" class="lflogo2 mx-auto max-w-full lg:hidden">
+        <div class="text-center"><h1 class="lfw font-script font-normal leading-tight text-navy-800" style="letter-spacing:0">${mode === 'in' ? 'Welcome ' : 'Create '}<span class="relative inline-block text-brand-600">${mode === 'in' ? 'back' : 'account'}<svg class="absolute inset-x-0 -bottom-1 h-2 w-full" viewBox="0 0 150 8" preserveAspectRatio="none"><path d="M0 6Q75-3 150 4" stroke="#d6362f" stroke-width="3" fill="none" stroke-linecap="round"/></svg></span></h1>
+          <p class="mt-2 text-sm font-medium text-navy-700">${mode === 'in' ? 'Sign in to MBA Admission Lead Manager' : 'The first account becomes Admin'}</p></div>
+        <div class="lfk rounded-[2rem] bg-white shadow-[0_24px_60px_-28px_rgba(214,54,47,.4)] ring-1 ring-brand-100/70"><div class="space-y-4">
+          ${mode === 'up' ? `<div><label class="mb-2 block text-sm font-bold text-navy-800">Full name</label><input class="${li}" name="name" required></div>` : ''}
+          <div><label class="mb-2 flex items-center gap-2 text-sm font-bold text-navy-800"><svg class="h-5 w-5 text-navy-700" viewBox="0 0 24 24" fill="currentColor"><path d="M3 6.5A2.5 2.5 0 015.5 4h13A2.5 2.5 0 0121 6.5v.3l-9 5.4-9-5.4zM3 9.1v8.4A2.5 2.5 0 005.5 20h13a2.5 2.5 0 002.5-2.5V9.1l-8.5 5.1a1 1 0 01-1 0z"/></svg>Email</label><input type="email" class="${li}" name="email" required></div>
+          <div><label class="mb-2 flex items-center gap-2 text-sm font-bold text-navy-800"><svg class="h-5 w-5 text-navy-700" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10V8a5 5 0 0110 0v2h.5A2.5 2.5 0 0120 12.5v6a2.5 2.5 0 01-2.5 2.5h-11A2.5 2.5 0 014 18.5v-6A2.5 2.5 0 016.5 10zm2 0h6V8a3 3 0 00-6 0z"/></svg>Password</label><input type="password" class="${li}" name="pw" required></div>
+          <div id="lmsg"></div>
+          <button class="btn-primary lfi w-full text-base" id="lbtn">${mode === 'in' ? 'Sign in' : 'Create account'}</button></div></div>
+        <div class="flex items-center gap-4 text-xs font-semibold text-slate-400"><span class="h-px flex-1 bg-navy-100"></span>OR<span class="h-px flex-1 bg-navy-100"></span></div>
+        <button type="button" class="w-full text-center text-sm font-semibold text-navy-800" id="lsw">${mode === 'in' ? 'First time? <span class="text-brand-600 hover:underline">Create an account →</span>' : 'Already have an account? <span class="text-brand-600 hover:underline">Sign in →</span>'}</button></form></section></div></div>`;
   $('#lsw').onclick = () => renderLogin(mode === 'in' ? 'up' : 'in');
   $('#lf').onsubmit = async (e) => {
     e.preventDefault(); const f = e.target; const msg = $('#lmsg'); msg.innerHTML = '';
@@ -131,8 +146,8 @@ function renderLogin(mode = 'in') {
     if (mode === 'in') { ({ error: err } = await sb.auth.signInWithPassword({ email: f.email.value, password: f.pw.value })); }
     else if (f.pw.value.length < 8) err = { message: 'Password must be at least 8 characters.' };
     else { const r = await sb.auth.signUp({ email: f.email.value, password: f.pw.value, options: { data: { full_name: f.name.value } } }); err = r.error; if (!err && !r.data.session) info = 'Account created. Check your email to confirm, then sign in.'; }
-    if (err) msg.innerHTML = `<div class="rounded-lg bg-red-50 p-2 text-sm text-red-700">${esc(err.message)}</div>`;
-    if (info) msg.innerHTML = `<div class="rounded-lg bg-emerald-50 p-2 text-sm text-emerald-700">${esc(info)}</div>`;
+    if (err) msg.innerHTML = `<div class="flex items-center gap-2 rounded-xl bg-brand-100/70 px-3.5 py-3 text-sm font-semibold text-brand-700"><svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="currentColor" fill-rule="evenodd"><path d="M12 3l10 18H2zM11 10v5h2v-5zm0 6.5v2h2v-2z"/></svg>${esc(err.message)}</div>`;
+    if (info) msg.innerHTML = `<div class="rounded-xl bg-emerald-50 p-3 text-sm font-medium text-emerald-700">${esc(info)}</div>`;
     b.disabled = false; b.textContent = mode === 'in' ? 'Sign in' : 'Create account';
   };
 }

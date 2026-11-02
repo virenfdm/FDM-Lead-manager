@@ -6,11 +6,11 @@
   <title>MBA Admission Lead Manager | FDM</title>
   <link rel="icon" href="FDM-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,700;1,9..40,800&family=Kaushan+Script&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script>
     tailwind.config = { theme: { extend: {
-      fontFamily: { display: ['Outfit', 'DM Sans', 'sans-serif'], sans: ['"DM Sans"', 'system-ui', 'sans-serif'] },
+      fontFamily: { display: ['Outfit', 'DM Sans', 'sans-serif'], script: ['"Kaushan Script"', 'cursive'], sans: ['"DM Sans"', 'system-ui', 'sans-serif'] },
       colors: {
         navy: { 50: '#f1f3fa', 100: '#dfe3f1', 200: '#c3cae3', 500: '#3b4a8c', 600: '#27346b', 700: '#1c2754', 800: '#141c40', 900: '#0d1230' },
         brand: { 50: '#fff1f0', 100: '#ffe0de', 500: '#e4413d', 600: '#d6362f', 700: '#b82a25' }
@@ -46,6 +46,25 @@
     @keyframes flt { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 .lph { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; animation: lph 24s infinite; }
     @keyframes lph { 0% { opacity: 0; transform: scale(1); } 6% { opacity: 1; } 25% { opacity: 1; } 31% { opacity: 0; transform: scale(1.07); } 100% { opacity: 0; transform: scale(1.07); } }
+    #lbtn::after { content: ''; width: 1.2em; height: 1.2em; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E") no-repeat center / contain; }
+
+    /* ---- login page: always fit the Chrome window (no page scroll) ---- */
+    html, body { margin: 0; }
+    .lfit { height: 100vh; height: 100dvh; }
+    .lfl { padding: clamp(1rem, 4.5vh, 2.5rem) clamp(2rem, 4vw, 3rem); }
+    .lflogo { width: clamp(8rem, 26vh, 16rem); flex-shrink: 0; }
+    .lfh { margin-top: clamp(.75rem, 3.5vh, 2rem); font-size: clamp(1.9rem, 6.4vh, 3.75rem); flex-shrink: 0; }
+    .lfp { margin-top: clamp(.5rem, 2.2vh, 1.5rem); font-size: clamp(.9rem, 2.2vh, 1.125rem); flex-shrink: 0; }
+    .lfc { margin-top: clamp(.5rem, 2.2vh, 1.5rem); flex-shrink: 0; }
+    .lfc > span { font-size: clamp(.75rem, 1.9vh, .875rem); padding-top: clamp(.15rem, .6vh, .375rem); padding-bottom: clamp(.15rem, .6vh, .375rem); }
+    .lfr { align-items: flex-start; }
+    .lff > * + * { margin-top: clamp(.6rem, 2.4vh, 1.25rem); }
+    .lflogo2 { width: clamp(7rem, 20vh, 14rem); display: block; }
+    .lfw { font-size: clamp(2.2rem, 6.6vh, 3.75rem); }
+    .lfk { padding: clamp(1rem, 3vh, 1.75rem); }
+    .lfk .space-y-4 > * + * { margin-top: clamp(.6rem, 2vh, 1rem); }
+    .lfk label { margin-bottom: clamp(.25rem, 1vh, .5rem); }
+    .lfi { padding-top: clamp(.55rem, 1.7vh, .875rem) !important; padding-bottom: clamp(.55rem, 1.7vh, .875rem) !important; }
     :focus-visible { outline: 2px solid #e4413d; outline-offset: 2px; }
     @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
   </style>
